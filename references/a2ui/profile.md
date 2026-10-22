@@ -1,6 +1,6 @@
 # XyAgenUI 对话 A2UI v0.9 Profile
 
-本 profile 定义 XyAgenUI 对话回答使用的 A2UI v0.9 消息、组件图增量更新和事件规则。生成答案时以本 profile、[对话 Skill](../../skills/xy-a2ui-chat/SKILL.md) 和 [Chat v1 组件目录](../../catalogs/xy-a2ui-chat-basic/v1/catalog.json) 为准。端侧 parser/renderer 源码不在本仓库，相关运行时行为是现有实现合同的记录，仍需在目标部署中验收。
+本 profile 定义 XyAgenUI 对话回答使用的 A2UI v0.9 消息、组件图增量更新和事件规则。生成答案时以本 profile、[对话 Skill](../../SKILL.md) 和 [Chat v1 组件目录](../../catalogs/xy-a2ui-chat-basic/v1/catalog.json) 为准。端侧 parser/renderer 源码不在本仓库，相关运行时行为是现有实现合同的记录，仍需在目标部署中验收。
 
 组件运行行为见[Extended Renderer 合同](renderer-contract.md)。
 

@@ -117,7 +117,7 @@ Skill 的路由策略固定为“始终生成 A2UI”，不在纯文本和 UI �
 
 ## 8. 仓库交付物
 
-- [`skills/xy-a2ui-chat/SKILL.md`](../skills/xy-a2ui-chat/SKILL.md)：每个 query 始终输出 A2UI 的生成 Skill。
+- [`SKILL.md`](../SKILL.md)：每个 query 始终输出 A2UI 的生成 Skill。
 - [`references/a2ui/`](../references/a2ui/)：对话协议 Profile、renderer 合同及参考索引。
 - [`catalogs/xy-a2ui-chat-basic/v1/catalog.json`](../catalogs/xy-a2ui-chat-basic/v1/catalog.json)：组件、props 和事件字段目录。
 - [`examples/`](../examples/)：短答、长答、结构化摘要、比较、图片、允许事件与无事件样例。

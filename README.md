@@ -3,7 +3,7 @@
 本仓库维护对话式 A2UI Skill、v1 组件目录，以及用于验证端侧 renderer 合同的样例。
 
 - `docs/a2ui-chat-skill-and-components-plan.md`：独立的设计与实施方案。
-- `skills/xy-a2ui-chat/SKILL.md`：回答生成 Skill。
+- `SKILL.md`：回答生成 Skill。
 - `catalogs/xy-a2ui-chat-basic/v1/catalog.json`：版本化组件白名单。
 - `references/a2ui/`：本项目使用的 A2UI 协议 Profile、renderer 合同和统一索引。
 - `examples/`：经验证的 JSONL fixtures 和本地图片资源。

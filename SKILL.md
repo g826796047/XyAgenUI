@@ -11,7 +11,7 @@ metadata:
 
 渲染前先组织准确答案，并保留所有重要事实、限定条件和用户要求的细节。然后选择适合内容和当前对话宽度的最小组件树。不要添加无助于阅读的 UI 装饰。
 
-消息和流式规则见[对话协议 Profile](../../references/a2ui/profile.md)。组件实现依据见[Extended renderer 合同](../../references/a2ui/renderer-contract.md)，机器可读组件和属性白名单见 [v1 组件目录](../../catalogs/xy-a2ui-chat-basic/v1/catalog.json)。
+消息和流式规则见[对话协议 Profile](references/a2ui/profile.md)。组件实现依据见[Extended renderer 合同](references/a2ui/renderer-contract.md)，机器可读组件和属性白名单见 [v1 组件目录](catalogs/xy-a2ui-chat-basic/v1/catalog.json)。
 
 ## 必需输出
 
