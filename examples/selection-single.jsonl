@@ -1,0 +1,8 @@
+{"version":"v0.9","createSurface":{"surfaceId":"test-selection-single","catalogId":"ohos.a2ui.extended.catalog.form"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-selection-single","component":{"id":"root","component":"Extended.Card","children":["heading","intro","divider","answer_style","confirm","hint"],"gap":10,"padding":16,"radius":8}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-selection-single","component":{"id":"heading","component":"Extended.Text","content":"选择讲解方式","styles":{"fontSize":18,"fontWeight":"600"}}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-selection-single","component":{"id":"intro","component":"Extended.Text","content":"你想先用哪种方式了解 A2UI 流式回复？请选择一项，确认后我会继续讲解。"}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-selection-single","component":{"id":"divider","component":"Extended.Divider"}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-selection-single","component":{"id":"answer_style","component":"Extended.ChoiceGroup","label":"讲解方式","mode":"single","options":[{"value":"overview","label":"先看整体流程","description":"从用户 query 到组件渲染，了解各环节如何衔接。"},{"value":"example","label":"从具体示例开始","description":"逐行阅读一个 JSONL 示例，再解释每条消息。"}]}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-selection-single","component":{"id":"confirm","component":"Extended.Button","label":"确认并继续","enabled":true,"action":{"event":{"name":"submit_selection_query","context":{"choiceGroupId":"answer_style","prompt":"请按照我选择的方式讲解 A2UI 流式回复。"}}}}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-selection-single","component":{"id":"hint","component":"Extended.Text","content":"选择只保存在当前回答中，点击确认后才会发送。","styles":{"fontSize":12}}}}

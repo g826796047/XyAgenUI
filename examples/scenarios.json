@@ -1,9 +1,12 @@
 [
-  { "id": "short-answer", "requiredFacts": ["42"], "events": [] },
-  { "id": "long-answer", "requiredFacts": ["每次接收一个组件", "完整累计内容", "新组件图"], "events": [] },
-  { "id": "structured-summary", "requiredFacts": ["决策：", "原因：", "下一步："], "events": [] },
-  { "id": "comparison", "requiredFacts": ["Column", "Row", "两侧都放得下"], "events": [] },
-  { "id": "image-answer", "requiredFacts": ["已标出目的地"], "events": [] },
-  { "id": "allowed-event", "requiredFacts": ["条目 42", "打开条目 42"], "events": ["open_item"] },
-  { "id": "no-event", "requiredFacts": ["条目 42"], "events": [] }
+  { "id": "short-answer", "query": "6 乘以 7 等于多少？", "requiredFacts": ["42"], "requiredComponents": ["Extended.Text"], "events": [] },
+  { "id": "long-answer", "query": "解释 A2UI 组件更新的流程，特别是累计文本和 root 的注意事项。", "requiredFacts": ["每次接收一个组件", "完整累计内容", "新组件图"], "requiredComponents": ["Extended.Card", "Extended.Column", "Extended.Divider", "Extended.Text"], "events": [] },
+  { "id": "structured-summary", "query": "总结本项目的决策、原因和下一步。", "requiredFacts": ["决策：", "原因：", "下一步："], "requiredComponents": ["Extended.Card", "Extended.Column", "Extended.Row", "Extended.Divider"], "events": [] },
+  { "id": "comparison", "query": "对比 Column 和 Row 的适用场景，按窄屏对话展示。", "requiredFacts": ["Column", "Row", "两侧都放得下"], "requiredComponents": ["Extended.Card", "Extended.Column", "Extended.Divider"], "events": [] },
+  { "id": "image-answer", "query": "展示随附街景图片，并说明标记的目的地。", "requiredFacts": ["已标出目的地"], "requiredComponents": ["Extended.Image", "Extended.Stack", "Extended.Text"], "events": [] },
+  { "id": "allowed-event", "query": "告诉我条目 42 是否就绪，并提供打开入口。", "requiredFacts": ["条目 42", "打开条目 42"], "requiredComponents": ["Extended.Button", "Extended.Text"], "events": ["open_item"] },
+  { "id": "no-event", "query": "告诉我条目 42 是否就绪。", "requiredFacts": ["条目 42"], "requiredComponents": ["Extended.Text"], "events": [] },
+  { "id": "selection-single", "query": "给我两个讲解 A2UI 流式回复的方式，让我选一个继续。", "requiredFacts": ["选择讲解方式", "先看整体流程", "从具体示例开始", "确认并继续"], "requiredComponents": ["Extended.Card", "Extended.ChoiceGroup", "Extended.Button"], "events": ["submit_selection_query"], "runtimeContext": "selection-runtime-context.json" },
+  { "id": "selection-multiple", "query": "我想学 A2UI，给我几个学习重点，允许选择一到两项。", "requiredFacts": ["学习重点", "理解协议", "设计回答布局", "接入选择交互"], "requiredComponents": ["Extended.Card", "Extended.Column", "Extended.ChoiceGroup", "Extended.Button"], "events": ["submit_selection_query"], "runtimeContext": "selection-runtime-context.json" },
+  { "id": "party-checklist", "query": "给我一个聚会筹备清单，让我勾选已完成事项，再根据进度建议下一步。", "requiredFacts": ["聚会筹备清单", "0/5 已完成", "邀请朋友", "确定时间和地点", "锁定最终人数", "购买食材或确认预订", "布置与开锅", "先发一条邀请消息"], "requiredComponents": ["Extended.Card", "Extended.Divider", "Extended.ChoiceGroup", "Extended.Button"], "events": ["submit_selection_query"], "runtimeContext": "selection-runtime-context.json" }
 ]

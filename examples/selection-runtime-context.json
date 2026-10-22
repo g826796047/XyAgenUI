@@ -1,0 +1,20 @@
+{
+  "a2ui": {
+    "capabilities": ["selection-query-v1"]
+  },
+  "allowedUiEvents": [
+    {
+      "name": "submit_selection_query",
+      "description": "读取本 surface 内指定选择组的当前选择，确认后作为同一对话的新用户 query 发送。",
+      "contextSchema": {
+        "type": "object",
+        "properties": {
+          "choiceGroupId": { "type": "string", "minLength": 1 },
+          "prompt": { "type": "string", "minLength": 1 }
+        },
+        "required": ["choiceGroupId", "prompt"],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

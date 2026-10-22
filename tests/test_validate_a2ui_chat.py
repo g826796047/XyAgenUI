@@ -8,11 +8,14 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from validate_a2ui_chat import validate_jsonl, validate_messages  # noqa: E402
+from selection_query import build_selection_query  # noqa: E402
 
 
 CATALOG = json.loads((ROOT / "catalogs/xy-a2ui-chat-basic/v1/catalog.json").read_text(encoding="utf-8"))
 SCENARIOS = json.loads((ROOT / "examples/scenarios.json").read_text(encoding="utf-8"))
 EVENTS = json.loads((ROOT / "examples/allowed-ui-events.json").read_text(encoding="utf-8"))
+SELECTION_CONTEXT = json.loads((ROOT / "examples/selection-runtime-context.json").read_text(encoding="utf-8"))
+SELECTION_RESULTS = json.loads((ROOT / "examples/selection-results.json").read_text(encoding="utf-8"))
 
 
 def read_messages(path: Path):
@@ -36,24 +39,48 @@ def final_text(messages):
         for item in components.values()
         if item.get("component") == "Extended.Button"
     )
-    return "\n".join((rendered_text, visible_labels))
+    choice_content = "\n".join(
+        "\n".join(
+            [item.get("label", "")]
+            + [option.get("label", "") + " " + option.get("description", "") for option in item.get("options", [])]
+        )
+        for item in components.values()
+        if item.get("component") == "Extended.ChoiceGroup"
+    )
+    return "\n".join((rendered_text, visible_labels, choice_content))
+
+
+def fixture_context(scenario):
+    if scenario.get("runtimeContext"):
+        return json.loads((ROOT / "examples" / scenario["runtimeContext"]).read_text(encoding="utf-8"))
+    return {"a2ui": {}, "allowedUiEvents": EVENTS if scenario["events"] else []}
 
 
 class ChatProfileTests(unittest.TestCase):
     def test_fixed_query_set_uses_a2ui_and_preserves_required_facts(self):
         self.assertEqual(
             {scenario["id"] for scenario in SCENARIOS},
-            {"short-answer", "long-answer", "structured-summary", "comparison", "image-answer", "allowed-event", "no-event"},
+            {
+                "short-answer", "long-answer", "structured-summary", "comparison", "image-answer",
+                "allowed-event", "no-event", "selection-single", "selection-multiple", "party-checklist",
+            },
         )
         for scenario in SCENARIOS:
             with self.subTest(scenario=scenario["id"]):
                 path = ROOT / "examples" / f"{scenario['id']}.jsonl"
-                events = EVENTS if scenario["events"] else []
-                errors = validate_jsonl(path, CATALOG, events)
+                context = fixture_context(scenario)
+                errors = validate_jsonl(path, CATALOG, context["allowedUiEvents"], context["a2ui"])
                 self.assertEqual(errors, [])
-                rendered_text = final_text(read_messages(path))
+                messages = read_messages(path)
+                rendered_text = final_text(messages)
                 for fact in scenario["requiredFacts"]:
                     self.assertIn(fact.lower(), rendered_text.lower())
+                components = {
+                    message["updateComponents"]["component"]["id"]: message["updateComponents"]["component"]
+                    for message in messages[1:]
+                }
+                used = {component["component"] for component in components.values()}
+                self.assertTrue(set(scenario["requiredComponents"]).issubset(used))
 
     def test_all_catalog_components_are_exercised_by_fixtures(self):
         used = set()
@@ -118,6 +145,107 @@ class ChatProfileTests(unittest.TestCase):
             and message["updateComponents"]["component"].get("component") == "Extended.Image"
         )
         self.assertTrue((ROOT / image["src"]).is_file())
+
+    def test_selection_fixtures_generate_queries_from_selected_values(self):
+        for result in SELECTION_RESULTS:
+            with self.subTest(fixture=result["fixture"]):
+                messages = read_messages(ROOT / "examples" / f"{result['fixture']}.jsonl")
+                group = next(
+                    message["updateComponents"]["component"]
+                    for message in messages
+                    if message.get("updateComponents", {}).get("component", {}).get("id") == result["choiceGroupId"]
+                )
+                confirm = next(
+                    message["updateComponents"]["component"]
+                    for message in messages
+                    if message.get("updateComponents", {}).get("component", {}).get("component") == "Extended.Button"
+                    and message["updateComponents"]["component"].get("action", {}).get("event", {}).get("name")
+                    == "submit_selection_query"
+                )
+                query = build_selection_query(
+                    group, result["selectedValues"], confirm["action"]["event"]["context"]["prompt"]
+                )
+                self.assertEqual(query, result["expectedQuery"])
+
+    def test_selection_interaction_requires_capability_and_event_whitelist(self):
+        messages = read_messages(ROOT / "examples/selection-single.jsonl")
+        self.assertTrue(any("capabilities" in error for error in validate_messages(messages, CATALOG, SELECTION_CONTEXT["allowedUiEvents"])))
+        self.assertTrue(any("allowedUiEvents" in error for error in validate_messages(messages, CATALOG, [], SELECTION_CONTEXT["a2ui"])))
+
+    def test_selection_event_context_is_literal_and_has_exact_fields(self):
+        messages = read_messages(ROOT / "examples/selection-single.jsonl")
+        button = next(message["updateComponents"]["component"] for message in messages if message.get("updateComponents", {}).get("component", {}).get("component") == "Extended.Button")
+        button["action"]["event"]["context"]["extra"] = "not allowed"
+        errors = validate_messages(messages, CATALOG, SELECTION_CONTEXT["allowedUiEvents"], SELECTION_CONTEXT["a2ui"])
+        self.assertTrue(any("只能且必须包含" in error or "未声明属性 'extra'" in error for error in errors))
+
+        button["action"]["event"]["context"].pop("extra")
+        button["action"]["event"]["context"]["prompt"] = {"path": "selection.prompt"}
+        errors = validate_messages(messages, CATALOG, SELECTION_CONTEXT["allowedUiEvents"], SELECTION_CONTEXT["a2ui"])
+        self.assertTrue(any("字面量" in error or "非空白字符串" in error for error in errors))
+
+        button["action"]["event"]["context"]["prompt"] = {"call": "buildPrompt", "args": {}, "extra": True}
+        errors = validate_messages(messages, CATALOG, SELECTION_CONTEXT["allowedUiEvents"], SELECTION_CONTEXT["a2ui"])
+        self.assertTrue(any("字面量" in error for error in errors))
+
+    def test_malformed_event_schema_is_rejected(self):
+        messages = read_messages(ROOT / "examples/allowed-event.jsonl")
+        malformed = [{
+            "name": "open_item",
+            "description": "打开条目。",
+            "contextSchema": {
+                "type": "object",
+                "properties": [],
+                "required": ["itemId"],
+                "additionalProperties": False,
+            },
+        }]
+        errors = validate_messages(messages, CATALOG, malformed)
+        self.assertTrue(any("properties 必须是对象" in error for error in errors))
+
+    def test_selection_group_contract_rejects_duplicate_values_invalid_bounds_and_preselection(self):
+        messages = read_messages(ROOT / "examples/selection-multiple.jsonl")
+        group = next(message["updateComponents"]["component"] for message in messages if message.get("updateComponents", {}).get("component", {}).get("component") == "Extended.ChoiceGroup")
+        group["options"][1]["value"] = group["options"][0]["value"]
+        errors = validate_messages(messages, CATALOG, SELECTION_CONTEXT["allowedUiEvents"], SELECTION_CONTEXT["a2ui"])
+        self.assertTrue(any("value 重复" in error for error in errors))
+
+        group["options"][1]["value"] = "layout"
+        group["maxSelected"] = 4
+        errors = validate_messages(messages, CATALOG, SELECTION_CONTEXT["allowedUiEvents"], SELECTION_CONTEXT["a2ui"])
+        self.assertTrue(any("maximum" in error or "最大值" in error or "maxSelected" in error or "选择数量" in error for error in errors))
+
+        group.pop("maxSelected")
+        group["selectedValues"] = ["protocol"]
+        errors = validate_messages(messages, CATALOG, SELECTION_CONTEXT["allowedUiEvents"], SELECTION_CONTEXT["a2ui"])
+        self.assertTrue(any("selectedValues" in error for error in errors))
+
+    def test_selection_button_must_reference_a_reachable_choice_group(self):
+        messages = read_messages(ROOT / "examples/selection-single.jsonl")
+        button = next(message["updateComponents"]["component"] for message in messages if message.get("updateComponents", {}).get("component", {}).get("component") == "Extended.Button")
+        button["action"]["event"]["context"]["choiceGroupId"] = "absent"
+        errors = validate_messages(messages, CATALOG, SELECTION_CONTEXT["allowedUiEvents"], SELECTION_CONTEXT["a2ui"])
+        self.assertTrue(any("可达的选择组" in error for error in errors))
+
+    def test_streamed_choice_group_update_is_validated_against_final_reference(self):
+        messages = read_messages(ROOT / "examples/selection-single.jsonl")
+        original_group = next(
+            message["updateComponents"]["component"]
+            for message in messages
+            if message.get("updateComponents", {}).get("component", {}).get("component") == "Extended.ChoiceGroup"
+        )
+        final_group = json.loads(json.dumps(original_group))
+        final_group["label"] = "最终讲解方式"
+        messages.append({
+            "version": "v0.9",
+            "updateComponents": {"surfaceId": "test-selection-single", "component": final_group},
+        })
+        errors = validate_messages(messages, CATALOG, SELECTION_CONTEXT["allowedUiEvents"], SELECTION_CONTEXT["a2ui"])
+        self.assertEqual(errors, [])
+        result = next(item for item in SELECTION_RESULTS if item["fixture"] == "selection-single")
+        confirm = next(message["updateComponents"]["component"] for message in messages if message.get("updateComponents", {}).get("component", {}).get("component") == "Extended.Button")
+        query = build_selection_query(final_group, result["selectedValues"], confirm["action"]["event"]["context"]["prompt"])
+        self.assertIn("\n最终讲解方式\n", query)
 
 
 if __name__ == "__main__":

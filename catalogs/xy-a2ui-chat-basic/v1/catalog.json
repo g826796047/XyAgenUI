@@ -1,10 +1,10 @@
 {
   "format": "xy-a2ui-component-catalog",
   "catalogId": "xy-a2ui-chat-basic",
-  "catalogVersion": "1.0.0",
+  "catalogVersion": "1.1.0",
   "protocolVersion": "v0.9",
   "profile": "xy-a2ui-chat",
-  "description": "XyAgenUI 对话回复使用的 v1 布局与基础组件。",
+  "description": "XyAgenUI 对话回复使用的 v1 布局、基础展示与选择交互组件。",
   "runtimeCatalogId": "ohos.a2ui.extended.catalog.form",
   "rendererContract": "实现合同见 references/a2ui/renderer-contract.md；协议 catalogId 由对话 profile 固定，按 catalog 路由的宿主必须映射到 Chat v1 Extended registry。",
   "components": {
@@ -103,6 +103,22 @@
       },
       "additionalProperties": false
     },
+    "Extended.ChoiceGroup": {
+      "category": "input",
+      "requiredCapability": "selection-query-v1",
+      "required": ["id", "component", "label", "mode", "options"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "component": { "const": "Extended.ChoiceGroup" },
+        "label": { "type": "string", "minLength": 1, "pattern": "\\S" },
+        "mode": { "type": "string", "enum": ["single", "multiple"] },
+        "options": { "type": "array", "minItems": 2, "items": { "$ref": "#/definitions/choiceOption" } },
+        "minSelected": { "type": "integer", "minimum": 1 },
+        "maxSelected": { "type": "integer", "minimum": 1 },
+        "styles": { "$ref": "#/definitions/cardStyles" }
+      },
+      "additionalProperties": false
+    },
     "Extended.Button": {
       "category": "basic",
       "required": ["id", "component", "label", "enabled", "action"],
@@ -118,6 +134,16 @@
     }
   },
   "definitions": {
+    "choiceOption": {
+      "type": "object",
+      "required": ["value", "label"],
+      "properties": {
+        "value": { "type": "string", "minLength": 1, "pattern": "\\S" },
+        "label": { "type": "string", "minLength": 1, "pattern": "\\S" },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
     "edgeInsets": {
       "type": "object",
       "properties": {

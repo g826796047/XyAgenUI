@@ -10,6 +10,13 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from selection_query import (
+    SELECTION_CAPABILITY,
+    SUBMIT_SELECTION_EVENT,
+    choice_group_errors,
+    selection_context_errors,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CATALOG = ROOT / "catalogs/xy-a2ui-chat-basic/v1/catalog.json"
@@ -191,12 +198,43 @@ def _event_errors(component: dict[str, Any], allowed_events: list[dict[str, Any]
     errors = _validate_schema(context, event_schema, event_schema, f"{path}.action.event.context")
     if _contains_binding_marker(context):
         errors.append(f"{path}：事件 context 必须使用字面量，不能使用 path/call 绑定")
+    if name == SUBMIT_SELECTION_EVENT:
+        errors.extend(f"{path}：{error}" for error in selection_context_errors(context))
+    return errors
+
+
+def _selection_event(component: dict[str, Any]) -> dict[str, Any] | None:
+    if component.get("component") != "Extended.Button":
+        return None
+    action = component.get("action")
+    event = action.get("event") if isinstance(action, dict) else None
+    if isinstance(event, dict) and event.get("name") == SUBMIT_SELECTION_EVENT:
+        return event
+    return None
+
+
+def _selection_links_errors(nodes: dict[str, Any], reachable: set[str]) -> list[str]:
+    errors: list[str] = []
+    confirmed: set[str] = set()
+    for node_id in reachable:
+        event = _selection_event(nodes[node_id]["source"])
+        if event is None or selection_context_errors(event.get("context")):
+            continue
+        target = event["context"]["choiceGroupId"]
+        if target not in reachable or nodes[target]["component"] != "Extended.ChoiceGroup":
+            errors.append(f"确认按钮 {node_id!r} 的 choiceGroupId 必须引用同一 surface 内可达的选择组")
+        else:
+            confirmed.add(target)
+    for node_id in reachable:
+        if nodes[node_id]["component"] == "Extended.ChoiceGroup" and node_id not in confirmed:
+            errors.append(f"选择组 {node_id!r} 缺少引用它的确认按钮")
     return errors
 
 
 def _contains_binding_marker(value: Any) -> bool:
     if isinstance(value, dict):
-        if set(value) == {"path"} or set(value) == {"call", "args"}:
+        # Binding objects must not be smuggled in with unrelated fields.
+        if "path" in value or "call" in value:
             return True
         return any(_contains_binding_marker(item) for item in value.values())
     if isinstance(value, list):
@@ -216,23 +254,55 @@ def validate_messages(
     messages: list[Any],
     catalog: dict[str, Any],
     allowed_ui_events: list[dict[str, Any]] | None = None,
+    a2ui: dict[str, Any] | None = None,
 ) -> list[str]:
     """返回已解析 JSONL 消息序列中的所有合同违规项。"""
     errors: list[str] = []
-    allowed_events = allowed_ui_events or []
+    if not isinstance(catalog, dict):
+        return ["catalog 必须是对象"]
+    if allowed_ui_events is not None and not isinstance(allowed_ui_events, list):
+        return ["allowedUiEvents 必须是数组"]
+    allowed_events = []
     components_catalog = catalog.get("components", {})
     if not isinstance(components_catalog, dict) or not components_catalog:
         return ["catalog.components 必须是非空对象"]
+    malformed_components = [
+        name for name, definition in components_catalog.items()
+        if not isinstance(name, str) or not isinstance(definition, dict)
+    ]
+    if malformed_components:
+        return [f"catalog.components 条目必须是对象：{malformed_components!r}"]
     event_names: set[str] = set()
-    for index, item in enumerate(allowed_events):
+    for index, item in enumerate(allowed_ui_events or []):
         if not isinstance(item, dict) or not isinstance(item.get("name"), str):
             errors.append(f"allowedUiEvents[{index}] 必须包含字符串 name")
             continue
+        allowed_events.append(item)
         if item["name"] in event_names:
             errors.append(f"allowedUiEvents 中事件名重复：{item['name']!r}")
         event_names.add(item["name"])
-        if not isinstance(item.get("contextSchema"), dict) or item["contextSchema"].get("type") != "object":
+        schema = item.get("contextSchema")
+        if not isinstance(schema, dict) or schema.get("type") != "object":
             errors.append(f"allowedUiEvents[{index}].contextSchema 必须是对象 schema")
+            continue
+        if not isinstance(schema.get("properties", {}), dict):
+            errors.append(f"allowedUiEvents[{index}].contextSchema.properties 必须是对象")
+        required = schema.get("required", [])
+        if not isinstance(required, list) or any(not isinstance(name, str) for name in required):
+            errors.append(f"allowedUiEvents[{index}].contextSchema.required 必须是字符串数组")
+        additional = schema.get("additionalProperties", True)
+        if not isinstance(additional, (bool, dict)):
+            errors.append(f"allowedUiEvents[{index}].contextSchema.additionalProperties 必须是布尔值或 schema")
+
+    if a2ui is None:
+        a2ui = {}
+    if not isinstance(a2ui, dict):
+        return errors + ["a2ui 必须是对象"]
+    capabilities = a2ui.get("capabilities", [])
+    if not isinstance(capabilities, list) or any(not isinstance(item, str) for item in capabilities):
+        errors.append("a2ui.capabilities 必须是字符串数组")
+        capabilities = []
+    has_selection_event = any(item.get("name") == SUBMIT_SELECTION_EVENT for item in allowed_events)
 
     if not messages:
         return errors + ["流内容为空"]
@@ -248,10 +318,14 @@ def validate_messages(
         errors.append("createSurface 只能包含 surfaceId 和 catalogId")
     surface_id = create.get("surfaceId")
     catalog_id = create.get("catalogId")
-    if not isinstance(surface_id, str) or not surface_id:
+    if not isinstance(surface_id, str) or not surface_id.strip():
         errors.append("createSurface.surfaceId 必须是非空字符串")
     if catalog_id != CHAT_CATALOG_ID:
         errors.append(f"createSurface.catalogId 必须固定为 {CHAT_CATALOG_ID!r}")
+    if "surfaceId" in a2ui and a2ui["surfaceId"] != surface_id:
+        errors.append("createSurface.surfaceId 与运行时 a2ui.surfaceId 不一致")
+    if "catalogId" in a2ui and a2ui["catalogId"] != CHAT_CATALOG_ID:
+        errors.append("运行时 a2ui.catalogId 与固定 catalogId 不一致")
 
     nodes: dict[str, dict[str, Any]] = {}
     root_definitions = 0
@@ -279,7 +353,7 @@ def validate_messages(
 
         component_name = component.get("component")
         component_id = component.get("id")
-        if component_name not in components_catalog:
+        if not isinstance(component_name, str) or component_name not in components_catalog:
             errors.append(f"第 {line_number} 行：组件 {component_name!r} 不在 v1 catalog 中")
             continue
         definition = components_catalog[component_name]
@@ -298,7 +372,15 @@ def validate_messages(
             elif isinstance(schema, dict):
                 errors.extend(_validate_schema(value, schema, catalog, f"{prefix}.{component_name}.{key}"))
 
-        if not isinstance(component_id, str) or not component_id:
+        if component_name == "Extended.ChoiceGroup" or _selection_event(component) is not None:
+            if SELECTION_CAPABILITY not in capabilities:
+                errors.append(f"{prefix}：选择交互要求 a2ui.capabilities 声明 {SELECTION_CAPABILITY}")
+            if not has_selection_event:
+                errors.append(f"{prefix}：选择交互要求 allowedUiEvents 包含 {SUBMIT_SELECTION_EVENT}")
+        if component_name == "Extended.ChoiceGroup":
+            errors.extend(f"{prefix}：{error}" for error in choice_group_errors(component))
+
+        if not isinstance(component_id, str) or not component_id.strip():
             errors.append(f"第 {line_number} 行：组件 id 必须是非空字符串")
             continue
         if component_id == "root":
@@ -352,6 +434,7 @@ def validate_messages(
         errors.append(f"组件 {node_id!r} 无法从 root 到达")
     if not any(nodes[node_id]["component"] == "Extended.Text" for node_id in visited):
         errors.append("最终答案树必须包含 Extended.Text 回答节点")
+    errors.extend(_selection_links_errors(nodes, visited))
     return errors
 
 
@@ -359,6 +442,7 @@ def validate_jsonl(
     path: Path,
     catalog: dict[str, Any],
     allowed_ui_events: list[dict[str, Any]] | None = None,
+    a2ui: dict[str, Any] | None = None,
 ) -> list[str]:
     messages: list[Any] = []
     errors: list[str] = []
@@ -370,22 +454,33 @@ def validate_jsonl(
             messages.append(json.loads(line))
         except json.JSONDecodeError as exc:
             errors.append(f"第 {line_number} 行：JSON 无效：{exc.msg}")
-    return errors + validate_messages(messages, catalog, allowed_ui_events)
+    return errors + validate_messages(messages, catalog, allowed_ui_events, a2ui)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("jsonl", type=Path, help="A2UI v0.9 对话 profile 的 JSONL 文件")
-    parser.add_argument("--events", type=Path, help="本轮 allowedUiEvents 的 JSON 数组")
+    context_args = parser.add_mutually_exclusive_group()
+    context_args.add_argument("--events", type=Path, help="本轮 allowedUiEvents 的 JSON 数组（兼容普通按钮）")
+    context_args.add_argument("--context", type=Path, help="包含 a2ui 和 allowedUiEvents 的宿主上下文 JSON")
     parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG, help="组件目录 JSON")
     args = parser.parse_args(argv)
 
     try:
         catalog = json.loads(args.catalog.read_text(encoding="utf-8"))
         events = json.loads(args.events.read_text(encoding="utf-8")) if args.events else []
+        a2ui = None
+        if args.context:
+            context = json.loads(args.context.read_text(encoding="utf-8"))
+            if not isinstance(context, dict):
+                raise ValueError("--context 文件必须包含宿主上下文对象")
+            a2ui = context.get("a2ui", {})
+            if not isinstance(a2ui, dict):
+                raise ValueError("--context 的 a2ui 必须是对象")
+            events = context.get("allowedUiEvents", [])
         if not isinstance(events, list):
-            raise ValueError("--events 文件必须包含 JSON 数组")
-        errors = validate_jsonl(args.jsonl, catalog, events)
+            raise ValueError("allowedUiEvents 必须是 JSON 数组")
+        errors = validate_jsonl(args.jsonl, catalog, events, a2ui)
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         print(f"错误：{exc}", file=sys.stderr)
         return 2
@@ -394,7 +489,10 @@ def main(argv: list[str] | None = None) -> int:
         for error in errors:
             print(f"错误：{error}")
         return 1
-    print(f"通过：{args.jsonl} 符合 {catalog['catalogId']} v{catalog['catalogVersion']}")
+    print(
+        f"通过：{args.jsonl} 符合 {catalog.get('catalogId', '未命名 catalog')} "
+        f"v{catalog.get('catalogVersion', '未知版本')}"
+    )
     return 0
 
 
