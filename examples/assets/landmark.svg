@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="已标记目的地的街景">
+  <rect width="800" height="500" fill="#dceef2"/>
+  <path d="M0 320h800v180H0z" fill="#d1d5db"/>
+  <path d="M0 350h800M0 450h800" stroke="#ffffff" stroke-width="8" stroke-dasharray="42 28"/>
+  <path d="M72 235h175v85H72zM268 205h192v115H268zM480 225h248v95H480z" fill="#f5f7fa" stroke="#667085" stroke-width="5"/>
+  <path d="M95 260h35v35H95zM145 260h35v35h-35zM291 235h42v42h-42zM350 235h42v42h-42zM520 252h48v43h-48zM585 252h48v43h-48z" fill="#8ec5d0"/>
+  <path d="M399 146c-31 0-56 25-56 56 0 42 56 99 56 99s56-57 56-99c0-31-25-56-56-56z" fill="#d92d20"/>
+  <circle cx="399" cy="202" r="18" fill="#fff"/>
+  <path d="M40 45h720v62H40z" rx="10" fill="#ffffff" opacity=".94"/>
+  <text x="64" y="86" font-family="sans-serif" font-size="28" fill="#101828">目的地预览</text>
+</svg>

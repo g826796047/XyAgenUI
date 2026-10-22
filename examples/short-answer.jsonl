@@ -1,0 +1,3 @@
+{"version":"v0.9","createSurface":{"surfaceId":"test-short","catalogId":"ohos.a2ui.extended.catalog.form"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-short","component":{"id":"root","component":"Extended.Column","children":["answer"]}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-short","component":{"id":"answer","component":"Extended.Text","content":"是的，答案是 42。"}}}

@@ -1,0 +1,11 @@
+{"version":"v0.9","createSurface":{"surfaceId":"test-summary","catalogId":"ohos.a2ui.extended.catalog.form"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"root","component":"Extended.Card","children":["heading","divider","body"],"gap":10,"padding":16,"radius":8,"fill":"#FFFFFF"}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"heading","component":"Extended.Text","content":"决策摘要","styles":{"fontSize":18,"fontWeight":"600"}}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"divider","component":"Extended.Divider","styles":{"strokeWidth":1,"color":"#D0D5DD"}}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"body","component":"Extended.Column","children":["decision","reason","next_step","profile_row"],"space":6}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"decision","component":"Extended.Text","content":"决策：所有回答都由 A2UI 承载。"}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"reason","component":"Extended.Text","content":"原因：简短回答也可以放在 Text 节点中，不需要纯文本分支。"}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"next_step","component":"Extended.Text","content":"下一步：逐行校验流式消息和最终组件树。"}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"profile_row","component":"Extended.Row","children":["profile_label","profile_value"],"space":8,"styles":{"width":"matchParent","justifyContent":"spaceBetween","alignItems":"center"}}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"profile_label","component":"Extended.Text","content":"场景"}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"profile_value","component":"Extended.Text","content":"对话回复"}}}

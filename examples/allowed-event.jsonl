@@ -1,0 +1,4 @@
+{"version":"v0.9","createSurface":{"surfaceId":"test-event","catalogId":"ohos.a2ui.extended.catalog.form"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-event","component":{"id":"root","component":"Extended.Column","children":["answer","open_item"],"space":8}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-event","component":{"id":"answer","component":"Extended.Text","content":"条目 42 已就绪，可以打开。"}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-event","component":{"id":"open_item","component":"Extended.Button","label":"打开条目 42","enabled":true,"action":{"event":{"name":"open_item","context":{"itemId":"item-42"}}}}}}

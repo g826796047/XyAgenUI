@@ -1,0 +1,9 @@
+[
+  { "id": "short-answer", "requiredFacts": ["42"], "events": [] },
+  { "id": "long-answer", "requiredFacts": ["每次接收一个组件", "完整累计内容", "新组件图"], "events": [] },
+  { "id": "structured-summary", "requiredFacts": ["决策：", "原因：", "下一步："], "events": [] },
+  { "id": "comparison", "requiredFacts": ["Column", "Row", "两侧都放得下"], "events": [] },
+  { "id": "image-answer", "requiredFacts": ["已标出目的地"], "events": [] },
+  { "id": "allowed-event", "requiredFacts": ["条目 42", "打开条目 42"], "events": ["open_item"] },
+  { "id": "no-event", "requiredFacts": ["条目 42"], "events": [] }
+]

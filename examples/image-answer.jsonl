@@ -1,0 +1,6 @@
+{"version":"v0.9","createSurface":{"surfaceId":"test-image","catalogId":"ohos.a2ui.extended.catalog.form"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"root","component":"Extended.Column","children":["photo_layer","caption"],"space":6}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"photo_layer","component":"Extended.Stack","children":["photo","photo_tag"],"styles":{"width":"matchParent","aspectRatio":1.6}}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"photo","component":"Extended.Image","src":"examples/assets/landmark.svg","styles":{"width":"matchParent","height":"matchParent","objectFit":"cover"}}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"photo_tag","component":"Extended.Text","content":"目的地","styles":{"padding":{"top":4,"right":8,"bottom":4,"left":8},"backgroundColor":"#FFFFFF","borderRadius":6}}}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"caption","component":"Extended.Text","content":"街景图片中已标出目的地。"}}}
