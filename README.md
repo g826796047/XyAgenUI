@@ -1,25 +1,33 @@
 # XyAgenUI
 
-本仓库维护对话式 A2UI Skill、v1.1 组件目录，以及用于验证端侧 renderer 合同的样例。
+XyAgenUI 是一个中文 A2UI 对话 Skill 与离线参考工具。模型的每个回答都使用 A2UI v0.9 JSONL，端侧按流逐条更新 surface；简单回答也由 `Text` 组件承载。目标组件目录是 A2UIRender `develop` 分支提交 `20a32b91edc4ccdb02b248a08e856f95f83f9800` 的 Extended catalog，固定 `catalogId` 为 `ohos.a2ui.extended.catalog`。
 
-- `docs/a2ui-chat-skill-and-components-plan.md`：独立的设计与实施方案。
-- `SKILL.md`：回答生成 Skill。
-- `catalogs/xy-a2ui-chat-basic/v1/catalog.json`：版本化组件白名单。
-- `references/a2ui/`：本项目使用的 A2UI 协议 Profile、选择交互合同、renderer 合同和统一索引。
-- `examples/`：经验证的 JSONL fixtures 和本地图片资源。
-- `tools/validate_a2ui_chat.py` 与 `tests/`：profile 和 fixtures 的校验工具及测试。
+## 目录
 
-A2UI 回复中的 `createSurface.catalogId` 固定为 `ohos.a2ui.extended.catalog.form`。宿主按每条回复提供 `surfaceId`。该固定值是 wire 协议字段，与本仓库的组件合同 ID `xy-a2ui-chat-basic` 不同。对话组件使用 `Extended.*` 名称；据现有客户端实现合同，parser 会丢弃 `catalogId` 并使用静态 Extended registry。如果目标宿主按 `catalogId` 选择目录，必须将固定值映射到包含本项目 Chat v1.1 组件的 Extended registry。本仓库 validator 只校验固定字段值和传入 catalog 的组件/属性，不验证宿主路由；目标端映射需要集成验收。
+- `SKILL.md`：模型输出规则和内容组织策略。
+- `references/a2ui/official/`：A2UI v0.9、基础 catalog、Extended catalog 和来源快照，唯一协议依据。
+- `references/a2ui/profile.md`、`interaction.md`、`forms.md`：对话、交互和安全数据联动合同。
+- `references/a2ui/legacy/`：旧 `.form`/`Extended.*` 合同的历史材料，仅用于迁移对照。
+- `catalogs/xy-a2ui-chat-basic/v1/catalog.json`：官方 Extended catalog 的本地副本。
+- `tools/validate_a2ui_chat.py`：离线 JSONL、组件图、动态值和白名单事件校验器。
+- `renderer/`：可粘贴 A2UI JSONL 并逐行流式渲染的浏览器参考工作台，支持选择、表单联动和 query 预览。
+- `examples/`：中文回答、比较、图片、选择和数据绑定样例。
 
-在项目根目录使用 Python 3 运行校验：
+## 校验
+
+需要 Python 3：
 
 ```powershell
-python -m unittest discover -s tests -v
 python tools/validate_a2ui_chat.py examples/short-answer.jsonl
-python tools/validate_a2ui_chat.py examples/allowed-event.jsonl --events examples/allowed-ui-events.json
-python tools/validate_a2ui_chat.py examples/selection-single.jsonl --context examples/selection-runtime-context.json
+python -m unittest discover -s tests -v
 ```
 
-Skill 的回答策略是“始终生成 A2UI，并尽可能使用丰富组件”。摘要、多主题内容、比较、步骤和图片会按内容关系组合 `Card`、`Row`、`Column`、`Divider`、`Image` 与 `Text`；一句话回答可以退化为最小 `Column` + `Text`。组件目录为 `xy-a2ui-chat-basic` v1.1.0，协议 wire `catalogId` 固定为 `ohos.a2ui.extended.catalog.form`。
+校验器默认加载官方 Extended catalog，拒绝旧 `Extended.*` 组件、`.form` catalog、`functionCall` 和不安全表达式。官方 schema 快照和 A2UIRender 来源记录见 `references/a2ui/official/README.md`。
 
-当宿主同时在 `a2ui.capabilities` 声明 `selection-query-v1` 并在 `allowedUiEvents` 白名单提供 `submit_selection_query` 时，回答可以使用 `Extended.ChoiceGroup` 和确认按钮。用户的实际选择由端侧状态管理，确认后按 [选择交互合同](references/a2ui/interaction.md) 组装为同一对话的新 query；能力或事件缺失时不会生成不可用交互。ChoiceGroup、事件 context 和 query 格式以该合同为准。
+## 浏览器渲染器
+
+```powershell
+python tools/serve_renderer.py
+```
+
+打开 <http://127.0.0.1:8765>，选择样例或粘贴 JSONL，使用流式、单步或即时渲染。校验通过且流结束后可操作选择和表单；确认按钮会根据当前状态生成本地 query 预览。宿主可通过 `window.xyA2uiHost.onEvent(detail)` 接入实际对话发送。浏览器参考渲染不能替代 HarmonyOS `SurfaceController`、扩展函数、资源域名、辅助功能和设备交互验收。

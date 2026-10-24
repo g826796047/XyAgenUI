@@ -1,3 +1,2 @@
-{"version":"v0.9","createSurface":{"surfaceId":"test-no-event","catalogId":"ohos.a2ui.extended.catalog.form"}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-no-event","component":{"id":"root","component":"Extended.Column","children":["answer"]}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-no-event","component":{"id":"answer","component":"Extended.Text","content":"条目 42 已就绪。"}}}
+{"version":"v0.9","createSurface":{"surfaceId":"test-no-event","catalogId":"ohos.a2ui.extended.catalog"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-no-event","components":[{"id":"root","component":"Column","children":["title","answer"]},{"id":"title","component":"Text","content":"当前没有可用操作事件，因此仅展示说明。","styles":{"fontSize":20,"fontWeight":"bold"}},{"id":"answer","component":"Text","content":"当前没有可用操作事件，因此仅展示说明。"}]}}

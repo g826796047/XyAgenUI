@@ -1,10 +1,2 @@
-{"version":"v0.9","createSurface":{"surfaceId":"test-long","catalogId":"ohos.a2ui.extended.catalog.form"}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-long","component":{"id":"root","component":"Extended.Card","children":["heading","body","divider","root_note"],"gap":12,"padding":16,"radius":8}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-long","component":{"id":"heading","component":"Extended.Text","content":"理解流式组件更新","styles":{"fontSize":18,"fontWeight":"600"}}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-long","component":{"id":"body","component":"Extended.Column","children":["lead"],"space":8}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-long","component":{"id":"lead","component":"Extended.Text","content":"Parser 每次接收一个组件。"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-long","component":{"id":"lead","component":"Extended.Text","content":"Parser 每次接收一个组件。重新定义非 root ID 会替换其当前 props，因此文本更新必须发送完整累计内容。"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-long","component":{"id":"body","component":"Extended.Column","children":["lead","detail"],"space":8}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-long","component":{"id":"detail","component":"Extended.Text","content":"保持 root 稳定：重新定义 root 会创建一棵新组件图。"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-long","component":{"id":"divider","component":"Extended.Divider"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-long","component":{"id":"root_note","component":"Extended.Text","content":"实践建议：使用稳定的组件 ID，先输出结构，再更新正文；回答结束时确保所有引用都已解析。"}}}
+{"version":"v0.9","createSurface":{"surfaceId":"test-long","catalogId":"ohos.a2ui.extended.catalog"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-long","components":[{"id":"root","component":"Column","children":["title","divider","next","answer"]},{"id":"title","component":"Text","content":"这是一个完整的解释，包含背景、取舍、风险和下一步行动。","styles":{"fontSize":20,"fontWeight":"bold"}},{"id":"divider","component":"Divider"},{"id":"next","component":"Text","content":"下一步：根据你的约束选择合适方案。"},{"id":"answer","component":"Text","content":"这是一个完整的解释，包含背景、取舍、风险和下一步行动。"}]}}

@@ -5,9 +5,40 @@
     "contextSchema": {
       "type": "object",
       "properties": {
-        "itemId": { "type": "string", "minLength": 1 }
+        "itemId": {
+          "type": "string",
+          "minLength": 1
+        }
       },
-      "required": ["itemId"],
+      "required": [
+        "itemId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "submit_selection_query",
+    "description": "读取当前回答中的实际选项并生成下一轮 query。",
+    "contextSchema": {
+      "type": "object",
+      "properties": {
+        "choiceGroupId": {"type": "string", "minLength": 1},
+        "prompt": {"type": "string", "minLength": 1}
+      },
+      "required": ["choiceGroupId", "prompt"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "submit_form_query",
+    "description": "读取当前表单数据并生成下一轮 query。",
+    "contextSchema": {
+      "type": "object",
+      "properties": {
+        "formId": {"type": "string", "minLength": 1},
+        "prompt": {"type": "string", "minLength": 1}
+      },
+      "required": ["formId", "prompt"],
       "additionalProperties": false
     }
   }

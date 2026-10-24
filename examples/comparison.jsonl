@@ -1,11 +1,2 @@
-{"version":"v0.9","createSurface":{"surfaceId":"test-compare","catalogId":"ohos.a2ui.extended.catalog.form"}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"root","component":"Extended.Column","children":["title","column_option","row_option","divider","conclusion"],"space":8}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"title","component":"Extended.Text","content":"布局对比","styles":{"fontSize":18,"fontWeight":"600"}}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"column_option","component":"Extended.Card","children":["column_title","column_fact"],"gap":4,"padding":12,"radius":8}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"column_title","component":"Extended.Text","content":"Column"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"column_fact","component":"Extended.Text","content":"适合窄屏对话和纵向呈现详细内容。"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"row_option","component":"Extended.Card","children":["row_title","row_fact"],"gap":4,"padding":12,"radius":8}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"row_title","component":"Extended.Text","content":"Row"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"row_fact","component":"Extended.Text","content":"两侧内容都能放入可用宽度时，布局更紧凑。"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"divider","component":"Extended.Divider"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-compare","component":{"id":"conclusion","component":"Extended.Text","content":"窄屏客户端使用 Column；只有两侧都放得下时才使用 Row。"}}}
+{"version":"v0.9","createSurface":{"surfaceId":"test-comparison","catalogId":"ohos.a2ui.extended.catalog"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-comparison","components":[{"id":"root","component":"Column","children":["title","grid","answer"]},{"id":"title","component":"Text","content":"比较结果：方案 A 更快，方案 B 更灵活。","styles":{"fontSize":20,"fontWeight":"bold"}},{"id":"grid","component":"Grid","children":["a","b"]},{"id":"a","component":"Text","content":"方案 A：实现快，扩展性一般。"},{"id":"b","component":"Text","content":"方案 B：实现慢，扩展性好。"},{"id":"answer","component":"Text","content":"比较结果：方案 A 更快，方案 B 更灵活。"}]}}

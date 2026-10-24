@@ -3,3 +3,5 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+renderer/node_modules/
+renderer/test-results/

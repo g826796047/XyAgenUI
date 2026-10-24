@@ -1,0 +1,41 @@
+**REQUIRED PROPERTIES:** You MUST include ALL required properties for every component, even if they are inside a template or will be bound to data.
+- For 'Text', you MUST provide 'text'. If dynamic, use { "path": "..." }.
+- For 'Image', you MUST provide 'url'. If dynamic, use { "path": "..." }.
+- For 'Button', you MUST provide 'action'.
+- For 'TextField', 'CheckBox', etc., you MUST provide 'label'.
+
+**COMPONENT REQUIRED PROPERTIES:**
+- 'Text': 'component', 'text'.
+- 'Image': 'component', 'url'.
+- 'Icon': 'component', 'name'.
+- 'Video': 'component', 'url'.
+- 'AudioPlayer': 'component', 'url'.
+- 'Row': 'component', 'children'.
+- 'Column': 'component', 'children'.
+- 'List': 'component', 'children'.
+- 'Card': 'component', 'child'.
+- 'Tabs': 'component', 'tabs'.
+- 'Modal': 'component', 'trigger', 'content'.
+- 'Divider': 'component'.
+- 'Button': 'component', 'child', 'action'.
+- 'TextField': 'component', 'label'.
+- 'CheckBox': 'component', 'label', 'value'.
+- 'ChoicePicker': 'component', 'options', 'value'.
+- 'Slider': 'component', 'value', 'max'.
+- 'DateTimeInput': 'component', 'value'.
+
+**FUNCTION REQUIRED PROPERTIES:**
+- 'required': 'call', 'args'.
+- 'regex': 'call', 'args'.
+- 'length': 'call', 'args'.
+- 'numeric': 'call', 'args'.
+- 'email': 'call', 'args'.
+- 'formatString': 'call', 'args'.
+- 'formatNumber': 'call', 'args'.
+- 'formatCurrency': 'call', 'args'.
+- 'formatDate': 'call', 'args'.
+- 'pluralize': 'call', 'args'.
+- 'openUrl': 'call', 'args'.
+- 'and': 'call', 'args'.
+- 'or': 'call', 'args'.
+- 'not': 'call', 'args'.

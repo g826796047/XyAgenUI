@@ -1,6 +1,9 @@
 {
   "a2ui": {
-    "capabilities": ["selection-query-v1"]
+    "capabilities": [
+      "selection-query-v1"
+    ],
+    "catalogId": "ohos.a2ui.extended.catalog"
   },
   "allowedUiEvents": [
     {
@@ -9,10 +12,19 @@
       "contextSchema": {
         "type": "object",
         "properties": {
-          "choiceGroupId": { "type": "string", "minLength": 1 },
-          "prompt": { "type": "string", "minLength": 1 }
+          "choiceGroupId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1
+          }
         },
-        "required": ["choiceGroupId", "prompt"],
+        "required": [
+          "choiceGroupId",
+          "prompt"
+        ],
         "additionalProperties": false
       }
     }

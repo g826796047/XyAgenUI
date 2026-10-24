@@ -1,0 +1,2 @@
+{"version":"v0.9","createSurface":{"surfaceId":"test-form-unavailable","catalogId":"ohos.a2ui.extended.catalog"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-form-unavailable","components":[{"id":"root","component":"Column","children":["title","answer"]},{"id":"title","component":"Text","content":"当前没有表单能力，先展示可编辑项说明。","styles":{"fontSize":20,"fontWeight":"bold"}},{"id":"answer","component":"Text","content":"当前没有表单能力，先展示可编辑项说明。"}]}}

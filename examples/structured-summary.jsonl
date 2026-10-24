@@ -1,11 +1,2 @@
-{"version":"v0.9","createSurface":{"surfaceId":"test-summary","catalogId":"ohos.a2ui.extended.catalog.form"}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"root","component":"Extended.Card","children":["heading","divider","body"],"gap":10,"padding":16,"radius":8,"fill":"#FFFFFF"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"heading","component":"Extended.Text","content":"决策摘要","styles":{"fontSize":18,"fontWeight":"600"}}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"divider","component":"Extended.Divider","styles":{"strokeWidth":1,"color":"#D0D5DD"}}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"body","component":"Extended.Column","children":["decision","reason","next_step","profile_row"],"space":6}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"decision","component":"Extended.Text","content":"决策：所有回答都由 A2UI 承载。"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"reason","component":"Extended.Text","content":"原因：简短回答也可以放在 Text 节点中，不需要纯文本分支。"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"next_step","component":"Extended.Text","content":"下一步：逐行校验流式消息和最终组件树。"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"profile_row","component":"Extended.Row","children":["profile_label","profile_value"],"space":8,"styles":{"width":"matchParent","justifyContent":"spaceBetween","alignItems":"center"}}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"profile_label","component":"Extended.Text","content":"场景"}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","component":{"id":"profile_value","component":"Extended.Text","content":"对话回复"}}}
+{"version":"v0.9","createSurface":{"surfaceId":"test-summary","catalogId":"ohos.a2ui.extended.catalog"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-summary","components":[{"id":"root","component":"Column","children":["title","divider","reason","meta","answer"]},{"id":"title","component":"Text","content":"决策摘要：所有回答都由 A2UI 承载。","styles":{"fontSize":20,"fontWeight":"bold"}},{"id":"divider","component":"Divider"},{"id":"reason","component":"Text","content":"原因：结构化组件表达信息关系。"},{"id":"meta","component":"Row","children":["label","value"],"itemMargin":8},{"id":"label","component":"Text","content":"场景"},{"id":"value","component":"Text","content":"对话回复"},{"id":"answer","component":"Text","content":"决策摘要：所有回答都由 A2UI 承载。"}]}}

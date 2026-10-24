@@ -1,12 +1,195 @@
 [
-  { "id": "short-answer", "query": "6 乘以 7 等于多少？", "requiredFacts": ["42"], "requiredComponents": ["Extended.Text"], "events": [] },
-  { "id": "long-answer", "query": "解释 A2UI 组件更新的流程，特别是累计文本和 root 的注意事项。", "requiredFacts": ["每次接收一个组件", "完整累计内容", "新组件图"], "requiredComponents": ["Extended.Card", "Extended.Column", "Extended.Divider", "Extended.Text"], "events": [] },
-  { "id": "structured-summary", "query": "总结本项目的决策、原因和下一步。", "requiredFacts": ["决策：", "原因：", "下一步："], "requiredComponents": ["Extended.Card", "Extended.Column", "Extended.Row", "Extended.Divider"], "events": [] },
-  { "id": "comparison", "query": "对比 Column 和 Row 的适用场景，按窄屏对话展示。", "requiredFacts": ["Column", "Row", "两侧都放得下"], "requiredComponents": ["Extended.Card", "Extended.Column", "Extended.Divider"], "events": [] },
-  { "id": "image-answer", "query": "展示随附街景图片，并说明标记的目的地。", "requiredFacts": ["已标出目的地"], "requiredComponents": ["Extended.Image", "Extended.Stack", "Extended.Text"], "events": [] },
-  { "id": "allowed-event", "query": "告诉我条目 42 是否就绪，并提供打开入口。", "requiredFacts": ["条目 42", "打开条目 42"], "requiredComponents": ["Extended.Button", "Extended.Text"], "events": ["open_item"] },
-  { "id": "no-event", "query": "告诉我条目 42 是否就绪。", "requiredFacts": ["条目 42"], "requiredComponents": ["Extended.Text"], "events": [] },
-  { "id": "selection-single", "query": "给我两个讲解 A2UI 流式回复的方式，让我选一个继续。", "requiredFacts": ["选择讲解方式", "先看整体流程", "从具体示例开始", "确认并继续"], "requiredComponents": ["Extended.Card", "Extended.ChoiceGroup", "Extended.Button"], "events": ["submit_selection_query"], "runtimeContext": "selection-runtime-context.json" },
-  { "id": "selection-multiple", "query": "我想学 A2UI，给我几个学习重点，允许选择一到两项。", "requiredFacts": ["学习重点", "理解协议", "设计回答布局", "接入选择交互"], "requiredComponents": ["Extended.Card", "Extended.Column", "Extended.ChoiceGroup", "Extended.Button"], "events": ["submit_selection_query"], "runtimeContext": "selection-runtime-context.json" },
-  { "id": "party-checklist", "query": "给我一个聚会筹备清单，让我勾选已完成事项，再根据进度建议下一步。", "requiredFacts": ["聚会筹备清单", "0/5 已完成", "邀请朋友", "确定时间和地点", "锁定最终人数", "购买食材或确认预订", "布置与开锅", "先发一条邀请消息"], "requiredComponents": ["Extended.Card", "Extended.Divider", "Extended.ChoiceGroup", "Extended.Button"], "events": ["submit_selection_query"], "runtimeContext": "selection-runtime-context.json" }
+  {
+    "id": "short-answer",
+    "query": "6 乘以 7 等于多少？",
+    "requiredFacts": [
+      "42"
+    ],
+    "requiredComponents": [
+      "Text"
+    ],
+    "events": []
+  },
+  {
+    "id": "long-answer",
+    "query": "解释 A2UI 组件更新的流程，特别是累计文本和 root 的注意事项。",
+    "requiredFacts": [
+      "完整的解释"
+    ],
+    "requiredComponents": [
+      "Column",
+      "Divider",
+      "Text"
+    ],
+    "events": []
+  },
+  {
+    "id": "structured-summary",
+    "query": "总结本项目的决策、原因和下一步。",
+    "requiredFacts": [
+      "决策摘要"
+    ],
+    "requiredComponents": [
+      "Column",
+      "Row",
+      "Divider",
+      "Text"
+    ],
+    "events": []
+  },
+  {
+    "id": "comparison",
+    "query": "对比 Column 和 Row 的适用场景，按窄屏对话展示。",
+    "requiredFacts": [
+      "比较结果"
+    ],
+    "requiredComponents": [
+      "Column",
+      "Grid",
+      "Text"
+    ],
+    "events": []
+  },
+  {
+    "id": "image-answer",
+    "query": "展示随附街景图片，并说明标记的目的地。",
+    "requiredFacts": [
+      "图片说明"
+    ],
+    "requiredComponents": [
+      "Column",
+      "Image",
+      "Text"
+    ],
+    "events": []
+  },
+  {
+    "id": "allowed-event",
+    "query": "告诉我条目 42 是否就绪，并提供打开入口。",
+    "requiredFacts": [
+      "条目"
+    ],
+    "requiredComponents": [
+      "Button",
+      "Text"
+    ],
+    "events": [
+      "open_item"
+    ]
+  },
+  {
+    "id": "no-event",
+    "query": "告诉我条目 42 是否就绪。",
+    "requiredFacts": [
+      "没有可用操作"
+    ],
+    "requiredComponents": [
+      "Text"
+    ],
+    "events": []
+  },
+  {
+    "id": "selection-single",
+    "query": "给我两个讲解 A2UI 流式回复的方式，让我选一个继续。",
+    "requiredFacts": [
+      "请选择一个方向"
+    ],
+    "requiredComponents": [
+      "Column",
+      "Radio",
+      "Button",
+      "Text"
+    ],
+    "events": [
+      "submit_selection_query"
+    ],
+    "runtimeContext": "selection-runtime-context.json"
+  },
+  {
+    "id": "selection-multiple",
+    "query": "我想学 A2UI，给我几个学习重点，允许选择一到两项。",
+    "requiredFacts": [
+      "请选择需要保留"
+    ],
+    "requiredComponents": [
+      "Column",
+      "Checkbox",
+      "CheckboxGroup",
+      "Button",
+      "Text"
+    ],
+    "events": [
+      "submit_selection_query"
+    ],
+    "runtimeContext": "selection-runtime-context.json"
+  },
+  {
+    "id": "party-checklist",
+    "query": "给我一个聚会筹备清单，让我勾选已完成事项，再根据进度建议下一步。",
+    "requiredFacts": [
+      "聚会筹备清单"
+    ],
+    "requiredComponents": [
+      "Column",
+      "List",
+      "Checkbox",
+      "CheckboxGroup",
+      "Button",
+      "Text"
+    ],
+    "events": [
+      "submit_selection_query"
+    ],
+    "runtimeContext": "selection-runtime-context.json"
+  },
+  {
+    "id": "mcdonalds-order",
+    "query": "我想点麦当劳，给我几个餐品和加购选项，允许多选后确认。",
+    "requiredFacts": [
+      "麦当劳点餐"
+    ],
+    "requiredComponents": [
+      "Column",
+      "Select",
+      "Checkbox",
+      "CheckboxGroup",
+      "Button",
+      "Text"
+    ],
+    "events": [
+      "submit_selection_query"
+    ],
+    "runtimeContext": "selection-runtime-context.json"
+  },
+  {
+    "id": "form-ingredients",
+    "query": "给我一个能修改人数并自动调整食材数量的聚会表单，可填写口味、备注和是否需要餐具，确认后生成采购清单。",
+    "requiredFacts": [
+      "人数变化",
+      "食材总量"
+    ],
+    "requiredComponents": [
+      "Column",
+      "TextInput",
+      "Select",
+      "Toggle",
+      "Button"
+    ],
+    "events": [
+      "submit_form_query"
+    ],
+    "runtimeContext": "form-runtime-context.json"
+  },
+  {
+    "id": "form-unavailable",
+    "query": "没有端侧表单联动能力时，展示 4 人每人 200 g 的食材用量及计算方法。",
+    "requiredFacts": [
+      "没有表单能力"
+    ],
+    "requiredComponents": [
+      "Column",
+      "Text"
+    ],
+    "events": []
+  }
 ]

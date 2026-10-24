@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>XyAgenUI · A2UI 渲染工作台</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/interactive.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="XyAgenUI 首页"><span class="brand-icon">xy<span>↗</span></span><strong>XyAgenUI</strong><span class="brand-divider"></span><span class="brand-subtitle">渲染工作台</span></a>
+    <span class="version"><i></i>A2UI v0.9 <span>／</span> 21 种组件</span>
+  </header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">A2UI PLAYGROUND</p><h1>让每一条消息，逐步成形<span>。</span></h1><p class="intro-copy">粘贴 A2UI，查看组件生长的过程，体验选择与表单联动。</p></div><div class="local-badge"><span>◉</span><div>本地运行<small>无需连接模型服务</small></div></div></section>
+    <div class="workspace">
+      <section class="panel source-panel" aria-labelledby="source-heading">
+        <div class="panel-header"><div class="panel-title"><span class="section-number">01</span><h2 id="source-heading">输入内容</h2></div><div class="file-actions"><button id="import-button" class="quiet-button">导入文件</button><input id="import-file" type="file" accept=".jsonl,.json,.txt" hidden></div></div>
+        <div class="sample-bar"><label for="sample">从样例开始</label><select id="sample"><option value="">选择一个场景…</option></select><button id="load-sample" class="icon-button" title="载入所选样例" aria-label="载入所选样例">↗</button></div>
+        <div class="editor-wrap"><div class="line-gutter" id="line-gutter" aria-hidden="true">1</div><textarea id="source" aria-label="A2UI JSONL 内容" spellcheck="false" placeholder='在这里粘贴 A2UI JSONL&#10;每行一个完整的 JSON 消息。'></textarea></div>
+        <div class="editor-footer"><span><i class="dot"></i>JSONL</span><span id="source-stats">0 行 · 0 KB</span></div>
+        <details class="context-details"><summary>运行时上下文 <span>能力声明与事件白名单</span></summary><textarea id="context" aria-label="运行时上下文 JSON" spellcheck="false"></textarea><button id="default-context" class="quiet-button">恢复工作台默认上下文</button></details>
+        <div class="playback-controls"><div class="playback-buttons"><button id="play" class="primary-button"><span>▶</span> 流式渲染</button><button id="step" class="secondary-button" title="解析并渲染下一条消息">单步</button><button id="instant" class="quiet-button">即时渲染</button><button id="reset" class="icon-button" title="重置预览" aria-label="重置预览">↺</button></div><label class="speed-label" for="speed">间隔<select id="speed"><option value="80">80 ms</option><option value="220" selected>220 ms</option><option value="600">600 ms</option><option value="1200">1.2 s</option></select></label></div>
+      </section>
+      <section class="panel preview-panel" aria-labelledby="preview-heading">
+        <div class="panel-header"><div class="panel-title"><span class="section-number">02</span><h2 id="preview-heading">实时预览</h2><span id="status" class="status-badge">准备就绪</span></div><div class="viewport-buttons" role="group" aria-label="预览宽度"><button class="viewport-button active" data-viewport="wide" aria-pressed="true">宽屏</button><button class="viewport-button" data-viewport="narrow" aria-pressed="false">窄屏</button></div></div>
+        <div class="preview-canvas" id="preview-canvas"><div class="preview-meta"><span id="surface-label">等待创建 surface</span><span id="progress-label">0 / 0 条消息</span></div><div id="preview-frame"><div id="preview" aria-label="A2UI 渲染结果"><div class="empty-state"><span class="empty-symbol">✳</span><h3>回答即将出现在这里</h3><p>粘贴内容或选择一个样例<br>点击「流式渲染」开始预览</p></div></div></div><div class="stream-note" id="stream-note">流结束且校验通过后，交互组件才会启用。</div></div>
+        <section class="inspector"><div class="inspector-header"><div role="tablist" aria-label="调试信息"><button id="result-tab" role="tab" aria-selected="true" aria-controls="result-panel" class="inspector-tab active">交互结果 <span id="result-count">0</span></button><button id="messages-tab" role="tab" aria-selected="false" aria-controls="messages-panel" class="inspector-tab">消息记录 <span id="message-count">0</span></button></div><button id="copy-result" class="quiet-button" disabled>复制最新 query</button></div><div id="result-panel" role="tabpanel" aria-labelledby="result-tab"><p class="inspector-empty">选择或填写后点击回答中的确认按钮，这里会显示下一轮 query。</p></div><div id="messages-panel" role="tabpanel" aria-labelledby="messages-tab" hidden><p class="inspector-empty">解析与组件更新记录将出现在这里。</p></div></section>
+      </section>
+    </div>
+    <div id="error-panel" class="error-panel" role="alert" hidden><strong>需要检查内容</strong><pre id="error-text"></pre></div>
+    <footer class="page-footer"><span><i class="dot"></i>xy-a2ui-chat-basic · 1.2.0</span><span>粘贴 → 流式解析 → 组件更新 → 交互确认</span></footer>
+  </main>
+  <div id="toast" role="status" hidden></div>
+</body>
+</html>

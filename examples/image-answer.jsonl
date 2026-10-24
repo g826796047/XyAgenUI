@@ -1,6 +1,2 @@
-{"version":"v0.9","createSurface":{"surfaceId":"test-image","catalogId":"ohos.a2ui.extended.catalog.form"}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"root","component":"Extended.Column","children":["photo_layer","caption"],"space":6}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"photo_layer","component":"Extended.Stack","children":["photo","photo_tag"],"styles":{"width":"matchParent","aspectRatio":1.6}}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"photo","component":"Extended.Image","src":"examples/assets/landmark.svg","styles":{"width":"matchParent","height":"matchParent","objectFit":"cover"}}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"photo_tag","component":"Extended.Text","content":"目的地","styles":{"padding":{"top":4,"right":8,"bottom":4,"left":8},"backgroundColor":"#FFFFFF","borderRadius":6}}}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-image","component":{"id":"caption","component":"Extended.Text","content":"街景图片中已标出目的地。"}}}
+{"version":"v0.9","createSurface":{"surfaceId":"test-image","catalogId":"ohos.a2ui.extended.catalog"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"test-image","components":[{"id":"root","component":"Column","children":["title","image","caption","answer"]},{"id":"title","component":"Text","content":"图片说明：这是用户提供的真实图片。","styles":{"fontSize":20,"fontWeight":"bold"}},{"id":"image","component":"Image","src":"examples/assets/landmark.svg"},{"id":"caption","component":"Text","content":"图注：资源来源由宿主确认。"},{"id":"answer","component":"Text","content":"图片说明：这是用户提供的真实图片。"}]}}

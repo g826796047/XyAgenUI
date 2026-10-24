@@ -1,311 +1,4823 @@
 {
-  "format": "xy-a2ui-component-catalog",
-  "catalogId": "xy-a2ui-chat-basic",
-  "catalogVersion": "1.1.0",
-  "protocolVersion": "v0.9",
-  "profile": "xy-a2ui-chat",
-  "description": "XyAgenUI 对话回复使用的 v1 布局、基础展示与选择交互组件。",
-  "runtimeCatalogId": "ohos.a2ui.extended.catalog.form",
-  "rendererContract": "实现合同见 references/a2ui/renderer-contract.md；协议 catalogId 由对话 profile 固定，按 catalog 路由的宿主必须映射到 Chat v1 Extended registry。",
-  "components": {
-    "Extended.Card": {
-      "category": "layout",
-      "required": ["id", "component", "children"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "component": { "const": "Extended.Card" },
-        "children": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "title": { "type": "string" },
-        "description": { "type": "string" },
-        "width": { "oneOf": [{ "type": "number" }, { "type": "string", "enum": ["matchParent"] }] },
-        "height": { "oneOf": [{ "type": "number" }, { "type": "string", "enum": ["matchParent"] }] },
-        "fill": { "type": "string" },
-        "strokeThickness": { "oneOf": [{ "type": "number" }, { "type": "object", "properties": { "top": { "type": "number" }, "right": { "type": "number" }, "bottom": { "type": "number" }, "left": { "type": "number" } }, "additionalProperties": false }] },
-        "strokeColor": { "type": "string" },
-        "layout": { "type": "string", "enum": ["vertical", "horizontal"] },
-        "justifyContent": { "type": "string", "enum": ["flex_start", "center", "flex_end", "space_between", "space_around"] },
-        "alignItems": { "type": "string", "enum": ["flex_start", "center", "flex_end", "stretch"] },
-        "gap": { "type": "number", "minimum": 0 },
-        "padding": { "oneOf": [{ "type": "number" }, { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 4 }, { "$ref": "#/definitions/edgeInsets" }] },
-        "radius": { "oneOf": [{ "type": "number" }, { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 }] },
-        "backgroundImage": { "type": "string", "minLength": 1 },
-        "backgroundBlendMode": { "type": "string" },
-        "backgroundPosition": { "type": "string" },
-        "backgroundSize": { "type": "string" },
-        "styles": { "$ref": "#/definitions/cardStyles" }
-      },
-      "additionalProperties": false
-    },
-    "Extended.Row": {
-      "category": "layout",
-      "required": ["id", "component", "children"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "component": { "const": "Extended.Row" },
-        "children": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "space": { "type": "number", "minimum": 0 },
-        "styles": { "$ref": "#/definitions/rowColumnStyles" }
-      },
-      "additionalProperties": false
-    },
-    "Extended.Column": {
-      "category": "layout",
-      "required": ["id", "component", "children"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "component": { "const": "Extended.Column" },
-        "children": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "space": { "type": "number", "minimum": 0 },
-        "styles": { "$ref": "#/definitions/rowColumnStyles" }
-      },
-      "additionalProperties": false
-    },
-    "Extended.Stack": {
-      "category": "layout",
-      "required": ["id", "component", "children"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "component": { "const": "Extended.Stack" },
-        "children": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "styles": { "$ref": "#/definitions/stackStyles" }
-      },
-      "additionalProperties": false
-    },
-    "Extended.Text": {
-      "category": "basic",
-      "required": ["id", "component", "content"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "component": { "const": "Extended.Text" },
-        "content": { "type": "string" },
-        "styles": { "$ref": "#/definitions/textStyles" }
-      },
-      "additionalProperties": false
-    },
-    "Extended.Image": {
-      "category": "basic",
-      "required": ["id", "component", "src"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "component": { "const": "Extended.Image" },
-        "src": { "type": "string", "minLength": 1 },
-        "styles": { "$ref": "#/definitions/imageStyles" }
-      },
-      "additionalProperties": false
-    },
-    "Extended.Divider": {
-      "category": "basic",
-      "required": ["id", "component"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "component": { "const": "Extended.Divider" },
-        "styles": { "$ref": "#/definitions/dividerStyles" }
-      },
-      "additionalProperties": false
-    },
-    "Extended.ChoiceGroup": {
-      "category": "input",
-      "requiredCapability": "selection-query-v1",
-      "required": ["id", "component", "label", "mode", "options"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "component": { "const": "Extended.ChoiceGroup" },
-        "label": { "type": "string", "minLength": 1, "pattern": "\\S" },
-        "mode": { "type": "string", "enum": ["single", "multiple"] },
-        "options": { "type": "array", "minItems": 2, "items": { "$ref": "#/definitions/choiceOption" } },
-        "minSelected": { "type": "integer", "minimum": 1 },
-        "maxSelected": { "type": "integer", "minimum": 1 },
-        "styles": { "$ref": "#/definitions/cardStyles" }
-      },
-      "additionalProperties": false
-    },
-    "Extended.Button": {
-      "category": "basic",
-      "required": ["id", "component", "label", "enabled", "action"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1 },
-        "component": { "const": "Extended.Button" },
-        "label": { "type": "string", "minLength": 1 },
-        "enabled": { "type": "boolean" },
-        "action": { "$ref": "#/definitions/buttonAction" },
-        "styles": { "$ref": "#/definitions/buttonStyles" }
-      },
-      "additionalProperties": false
-    }
-  },
-  "definitions": {
-    "choiceOption": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2ui.org/specification/v0_9/extended_catalog.json",
+  "title": "HarmonyOS Agent UI Protocol - Extended Catalog",
+  "description": "Complete catalog for HarmonyOS Agent UI Protocol extensions, including components, interactions, and expressions.",
+  "catalogId": "ohos.a2ui.extended.catalog",
+  "extends": "https://a2ui.org/specification/v0_9/basic_catalog.json",
+  "expressionGrammar": "expression_grammar.ebnf",
+  "$defs": {
+    "ExtendedComponentCommon": {
       "type": "object",
-      "required": ["value", "label"],
+      "description": "Common properties for all extended components",
       "properties": {
-        "value": { "type": "string", "minLength": 1, "pattern": "\\S" },
-        "label": { "type": "string", "minLength": 1, "pattern": "\\S" },
-        "description": { "type": "string" }
-      },
-      "additionalProperties": false
-    },
-    "edgeInsets": {
-      "type": "object",
-      "properties": {
-        "top": { "type": "number" },
-        "right": { "type": "number" },
-        "bottom": { "type": "number" },
-        "left": { "type": "number" }
-      },
-      "additionalProperties": false
-    },
-    "radiusInsets": {
-      "type": "object",
-      "properties": {
-        "topLeft": { "type": "number" },
-        "topRight": { "type": "number" },
-        "bottomRight": { "type": "number" },
-        "bottomLeft": { "type": "number" }
-      },
-      "additionalProperties": false
-    },
-    "commonStyles": {
-      "type": "object",
-      "properties": {
-        "width": { "oneOf": [{ "type": "number" }, { "type": "string", "enum": ["matchParent", "wrapContent"] }, { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?%$" }] },
-        "height": { "oneOf": [{ "type": "number" }, { "type": "string", "enum": ["matchParent"] }, { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?%$" }] },
-        "flexShrink": { "type": "number" },
-        "aspectRatio": { "type": "number", "exclusiveMinimum": 0 },
-        "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
-        "minWidth": { "type": "number" },
-        "minHeight": { "type": "number" },
-        "maxWidth": { "type": "number" },
-        "maxHeight": { "type": "number" },
-        "margin": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/edgeInsets" }] },
-        "padding": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/edgeInsets" }] },
-        "borderRadius": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/radiusInsets" }] },
-        "visibility": { "type": "string", "enum": ["visible", "hidden", "none"] },
-        "clip": { "type": "boolean" },
-        "backgroundColor": { "type": "string" },
-        "borderWidth": { "type": ["number", "string"] },
-        "borderColor": { "type": "string" },
-        "layoutWeight": { "type": "number" }
+        "id": {
+          "type": "string",
+          "description": "Unique component identifier within the surface"
+        },
+        "component": {
+          "type": "string",
+          "description": "Component type name (e.g. Text, Button)"
+        },
+        "styles": {
+          "description": "Style properties for the component. Common styles plus component-specific styles.",
+          "allOf": [
+            {
+              "$ref": "#/$defs/CommonStyles"
+            }
+          ],
+          "additionalProperties": true
+        },
+        "onClick": {
+          "type": "array",
+          "description": "Array of EventHandlers to execute sequentially on click",
+          "items": {
+            "$ref": "#/$defs/EventHandler"
+          }
+        },
+        "onAppear": {
+          "type": "array",
+          "description": "Array of EventHandlers to execute sequentially when component appears",
+          "items": {
+            "$ref": "#/$defs/EventHandler"
+          }
+        },
+        "accessibility": {
+          "type": "object",
+          "description": "Accessibility attributes for assistive technologies like screen readers.",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "A short string (1-3 words) used by assistive technologies to convey the element's purpose. E.g. 'Submit', 'User ID'."
+            },
+            "description": {
+              "type": "string",
+              "description": "Additional information for assistive technologies, such as instructions or format requirements. E.g. 'Silences notifications about this conversation'."
+            }
+          },
+          "additionalProperties": false
+        }
       }
     },
-    "textStyles": {
-      "allOf": [
-        { "$ref": "#/definitions/commonStyles" },
-        {
+    "EventHandler": {
+      "type": "object",
+      "description": "A wrapper around a function call in an event handler chain. The function return type is defined by the referenced extended function, not by EventHandler itself.",
+      "properties": {
+        "call": {
+          "type": "string",
+          "description": "Function name referenced by this EventHandler. Predefined and custom functions are defined via catalog extendedFunctions."
+        },
+        "as": {
+          "type": "string",
+          "description": "Named variable binding for EventHandler return value. Must start with a letter or underscore, containing only letters, digits, and underscores.",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+        },
+        "condition": {
+          "type": "string",
+          "description": "Execution condition (expression)"
+        },
+        "args": {
           "type": "object",
-          "properties": {
-            "textOverflow": { "type": "string", "enum": ["ellipsis", "clip", "marquee", "none"] },
-            "decoration": {
+          "description": "Arguments passed to the function referenced by call. The argument schema is defined by the referenced extended function."
+        }
+      },
+      "required": [
+        "call"
+      ],
+      "additionalProperties": false
+    },
+    "FunctionCall": {
+      "type": "object",
+      "description": "A call object used where an extended function is invoked. Return type is defined by the referenced extended function.",
+      "properties": {
+        "call": {
+          "type": "string",
+          "description": "Function name defined in extendedFunctions"
+        },
+        "args": {
+          "type": "object",
+          "description": "Arguments passed to the referenced function"
+        }
+      },
+      "required": [
+        "call"
+      ],
+      "additionalProperties": false
+    },
+    "ExtendedFunctionDefinition": {
+      "type": "object",
+      "description": "Definition of a HarmonyOS extended function. Calls reference this definition by name through FunctionCall or EventHandler.call.",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "args": {
+          "description": "JSON Schema for function arguments",
+          "type": "object"
+        },
+        "returnType": {
+          "description": "Function return type. Void functions may declare const void or omit this field.",
+          "type": "object"
+        },
+        "interactionOnly": {
+          "type": "boolean",
+          "description": "Whether the function can only be used in interaction contexts"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FunctionCall"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Expression": {
+      "type": "string",
+      "description": "Expression string wrapped in {{...}}. See expression_grammar.ebnf for complete syntax.",
+      "pattern": "^\\{\\{[^{}]+\\}\\}$"
+    },
+    "PathBinding": {
+      "type": "object",
+      "description": "A2UI native data binding via JSON Pointer path. The resolved value type depends on the DataModel path target. Distinct from Expression syntax; use for simple declarative data binding.",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "JSON Pointer path to the data model value (e.g. '/user/name')"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "ExtendedDynamicValueRef": {
+      "description": "Dynamic value reference resolved at runtime: expression string, data path binding, or function call.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Expression"
+        },
+        {
+          "$ref": "#/$defs/PathBinding"
+        },
+        {
+          "$ref": "#/$defs/FunctionCall"
+        }
+      ]
+    },
+    "ExtendedDynamicString": {
+      "description": "String value or dynamic value source resolved at runtime.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/$defs/ExtendedDynamicValueRef"
+        }
+      ]
+    },
+    "ExtendedDynamicNumber": {
+      "description": "Number value or dynamic value source resolved at runtime.",
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "$ref": "#/$defs/ExtendedDynamicValueRef"
+        }
+      ]
+    },
+    "ExtendedDynamicBoolean": {
+      "description": "Boolean value or dynamic value source resolved at runtime.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/$defs/ExtendedDynamicValueRef"
+        }
+      ]
+    },
+    "TemplateChildren": {
+      "type": "object",
+      "description": "Template child generation: iterates over data array at path, instantiating componentId for each item. Default loop variables are $index and $item, customizable via indexVar/itemVar.",
+      "properties": {
+        "componentId": {
+          "type": "string",
+          "description": "Template component ID to instantiate for each array item"
+        },
+        "path": {
+          "type": "string",
+          "description": "JSON Pointer path to the data array in DataModel"
+        },
+        "indexVar": {
+          "type": "string",
+          "description": "Custom index variable name (use with $ prefix). Default: 'index'. Must start with a letter or underscore, containing only letters, digits, and underscores.",
+          "default": "index",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+        },
+        "itemVar": {
+          "type": "string",
+          "description": "Custom item data variable name (use with $ prefix). Default: 'item'. Must start with a letter or underscore, containing only letters, digits, and underscores.",
+          "default": "item",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+        }
+      },
+      "required": [
+        "componentId",
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "CommonStyles": {
+      "type": "object",
+      "description": "Common styles applicable to all extended components",
+      "properties": {
+        "backgroundImageSizeWithStyle": {
+          "description": "Background image sizing. String enum: 'cover' (fill bounds, maintain ratio), 'contain' (fit inside bounds), 'auto' (original ratio), 'fill' (stretch to fill). Default: 'auto'. Or object {width, height} with number or string values (units: vp, %).",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "cover",
+                "contain",
+                "auto",
+                "fill"
+              ],
+              "default": "auto"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            },
+            {
               "type": "object",
               "properties": {
-                "type": { "type": "string", "enum": ["none", "underline", "overline", "lineThrough"] },
-                "color": { "type": "string" },
-                "style": { "type": "string", "enum": ["solid", "doubleE", "dotted", "dashed", "wavy"] }
+                "width": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "height": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                }
               },
-              "additionalProperties": false
+              "required": [
+                "width",
+                "height"
+              ]
+            }
+          ]
+        },
+        "flexShrink": {
+          "description": "Ratio of the parent's compressed size allocated to this component. Range: [0, +infinity). Default: 0 when the parent is Column or Row; 1 when the parent is Flex. Invalid values fall back to the default for the parent container.",
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
             },
-            "fontSize": { "type": "number" },
-            "fontWeight": { "type": ["string", "number"], "enum": ["300", "400", "500", "600", "700", 300, 400, 500, 700, 900] },
-            "fontColor": { "type": "string" },
-            "textAlign": { "type": "string", "enum": ["start", "center", "end", "justify"] },
-            "maxLines": { "type": "integer", "minimum": 1 },
-            "wordBreak": { "type": "string", "enum": ["normal", "breakAll", "breakWord", "hyphenation"] },
-            "maxFontSize": { "type": "number" },
-            "fontScaleMode": { "type": "string", "enum": ["followSystem", "custom"] },
-            "minFontScale": { "type": "number" },
-            "maxFontScale": { "type": "number" }
-          }
-        }
-      ],
-      "unevaluatedProperties": false
-    },
-    "rowColumnStyles": {
-      "allOf": [
-        { "$ref": "#/definitions/commonStyles" },
-        {
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "width": {
+          "description": "Component width. Number (unit: vp), string with unit (e.g. '100vp', '50%'), or enum: 'matchParent' (fill parent content area), 'wrapContent' (fit content, constrained by parent), 'fixAtIdealSize' (fit content, unconstrained).",
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "height": {
+          "description": "Component height. Number (unit: vp), string with unit (e.g. '100vp', '50%'), or enum: 'matchParent' (fill parent content area), 'wrapContent' (fit content, constrained by parent), 'fixAtIdealSize' (fit content, unconstrained).",
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "constraintSize": {
+          "description": "Size constraints limiting component dimensions during layout. Object {minWidth, maxWidth, minHeight, maxHeight}; all four fields are optional. Omitted minWidth/minHeight default to 0; omitted maxWidth/maxHeight impose no maximum. Values: number (vp), string with unit, or dynamic value binding.",
           "type": "object",
           "properties": {
-            "justifyContent": { "type": "string", "enum": ["start", "center", "end", "spaceBetween", "spaceAround", "spaceEvenly"] },
-            "alignItems": { "type": "string", "enum": ["top", "center", "bottom"] }
+            "minWidth": {
+              "description": "Optional minimum width. Omitted value defaults to 0. Number uses vp; string supports vp or %; dynamic value binding is also supported.",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            },
+            "maxWidth": {
+              "description": "Optional maximum width. When omitted, no maximum width constraint is applied. Number uses vp; string supports vp or %; dynamic value binding is also supported.",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            },
+            "minHeight": {
+              "description": "Optional minimum height. Omitted value defaults to 0. Number uses vp; string supports vp or %; dynamic value binding is also supported.",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            },
+            "maxHeight": {
+              "description": "Optional maximum height. When omitted, no maximum height constraint is applied. Number uses vp; string supports vp or %; dynamic value binding is also supported.",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            }
           }
-        }
-      ],
-      "unevaluatedProperties": false
-    },
-    "stackStyles": {
-      "allOf": [
-        { "$ref": "#/definitions/commonStyles" },
-        {
+        },
+        "backgroundImage": {
+          "description": "Background image URL path.",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "margin": {
+          "description": "Outer spacing around the component. Number, string, or object {top, right, bottom, left}. Number/string for uniform spacing (unit: vp), object for per-side control. Values: number (vp) or string with unit.",
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "top": {
+                  "description": "Top margin. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "right": {
+                  "description": "Right margin. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "bottom": {
+                  "description": "Bottom margin. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "left": {
+                  "description": "Left margin. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "borderRadius": {
+          "description": "Border corner radius. Number, string, or object {topLeft, topRight, bottomLeft, bottomRight}. Number/string for uniform radius (unit: vp), object for per-corner control. Values: number (vp) or string with unit.",
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "topLeft": {
+                  "description": "Top-left corner radius. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "topRight": {
+                  "description": "Top-right corner radius. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "bottomLeft": {
+                  "description": "Bottom-left corner radius. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "bottomRight": {
+                  "description": "Bottom-right corner radius. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "visibility": {
+          "description": "Component visibility. Default: 'visible'. 'visible': shown normally. 'hidden': invisible but occupies layout space. 'none': invisible and occupies no space.",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "visible",
+                "hidden",
+                "none"
+              ],
+              "default": "visible"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "clip": {
+          "description": "Whether to clip child content to the component's boundary. Default: false.",
+          "oneOf": [
+            {
+              "type": "boolean",
+              "default": false
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "backgroundColor": {
+          "description": "Background color in 0xARGB hex format (e.g. '#00FF0000'). Default: transparent.",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "borderWidth": {
+          "description": "Border width. Number (unit: vp) or string with unit (e.g. '2vp').",
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "borderColor": {
+          "description": "Border color in 0xARGB hex format. Default: Color.Black.",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "padding": {
+          "description": "Inner spacing between component edge and content. Number, string, or object {top, right, bottom, left}. Number/string for uniform spacing (unit: vp), object for per-side control. Values: number (vp) or string with unit.",
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "top": {
+                  "description": "Top padding. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "right": {
+                  "description": "Right padding. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "bottom": {
+                  "description": "Bottom padding. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "left": {
+                  "description": "Left padding. Number uses vp; string supports vp or %; dynamic value binding is supported.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "layoutWeight": {
+          "description": "Layout weight for proportional sizing within parent Row/Column. Default: 0. Only effective when parent is Row or Column.",
+          "oneOf": [
+            {
+              "type": "number",
+              "default": 0
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "shadow": {
+          "description": "Shadow effect. Object {offsetX, offsetY, radius, color, fill, type}. radius is required, range [0, +inf). Default offsetX/offsetY: 0vp. Or string enum: 'outerDefaultXS', 'outerDefaultSM', 'outerDefaultMD', 'outerDefaultLG', 'outerFloatingSM', 'outerFloatingMD'.",
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "offsetX": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "default": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "offsetY": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "default": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "radius": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "color": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "fill": {
+                  "oneOf": [
+                    {
+                      "type": "boolean",
+                      "default": false
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "color",
+                    "blur"
+                  ],
+                  "default": "color"
+                }
+              },
+              "required": [
+                "radius"
+              ]
+            },
+            {
+              "type": "string",
+              "enum": [
+                "outerDefaultXS",
+                "outerDefaultSM",
+                "outerDefaultMD",
+                "outerDefaultLG",
+                "outerFloatingSM",
+                "outerFloatingMD"
+              ]
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "linearGradient": {
+          "description": "Linear gradient fill. Object {angle, direction, colors, repeating}. angle: number, default 180. direction: enum (Left/Top/Right/Bottom/LeftTop/LeftBottom/RightTop/RightBottom/None), default None. colors: required, array of [color, position] pairs. repeating: boolean, default false.",
           "type": "object",
           "properties": {
-            "alignContent": { "type": "string", "enum": ["topStart", "top", "topEnd", "start", "center", "end", "bottomStart", "bottom", "bottomEnd"] }
-          }
-        }
-      ],
-      "unevaluatedProperties": false
-    },
-    "imageStyles": {
-      "allOf": [
-        { "$ref": "#/definitions/commonStyles" },
-        {
-          "type": "object",
-          "properties": {
-            "objectFit": { "type": "string", "enum": ["fill", "contain", "cover", "auto", "none", "scaleDown", "topStart", "top", "topEnd", "start", "center", "end", "bottomStart", "bottom", "bottomEnd", "matrix"] }
-          }
-        }
-      ],
-      "unevaluatedProperties": false
-    },
-    "dividerStyles": {
-      "allOf": [
-        { "$ref": "#/definitions/commonStyles" },
-        {
-          "type": "object",
-          "properties": {
-            "strokeWidth": { "type": "number", "minimum": 0 },
-            "vertical": { "type": "boolean" },
-            "color": { "type": "string" }
-          }
-        }
-      ],
-      "unevaluatedProperties": false
-    },
-    "buttonStyles": {
-      "allOf": [
-        { "$ref": "#/definitions/commonStyles" },
-        {
-          "type": "object",
-          "properties": {
-            "fontSize": { "type": "number" },
-            "fontWeight": { "type": ["string", "number"], "enum": ["300", "400", "500", "600", "700", 100, 300, 400, 500, 700, 900] },
-            "fontColor": { "type": "string" },
-            "maxFontSize": { "type": "number" },
-            "fontScaleMode": { "type": "string", "enum": ["followSystem", "custom"] },
-            "minFontScale": { "type": "number" },
-            "maxFontScale": { "type": "number" }
-          }
-        }
-      ],
-      "unevaluatedProperties": false
-    },
-    "cardStyles": {
-      "allOf": [{ "$ref": "#/definitions/commonStyles" }],
-      "unevaluatedProperties": false
-    },
-    "buttonAction": {
-      "type": "object",
-      "properties": {
-        "event": {
-          "type": "object",
-          "properties": {
-            "name": { "type": "string", "minLength": 1 },
-            "context": { "type": "object" }
+            "angle": {
+              "oneOf": [
+                {
+                  "type": "number",
+                  "default": 180
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "Left",
+                "Top",
+                "Right",
+                "Bottom",
+                "LeftTop",
+                "LeftBottom",
+                "RightTop",
+                "RightBottom",
+                "None"
+              ],
+              "default": "None"
+            },
+            "colors": {
+              "type": "array",
+              "description": "Array of [ResourceColor, number] pairs for gradient color stops",
+              "items": {
+                "type": "array",
+                "items": {},
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "default": []
+            },
+            "repeating": {
+              "oneOf": [
+                {
+                  "type": "boolean",
+                  "default": false
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            }
           },
-          "required": ["name", "context"],
+          "required": [
+            "colors"
+          ]
+        },
+        "aspectRatio": {
+          "description": "Width-to-height ratio (width/height). Default: 1.0. When only width is set, height = width/ratio. When only height is set, width = height*ratio. When both set with ratio, height is recalculated. constraintSize takes priority over aspectRatio.",
+          "oneOf": [
+            {
+              "type": "number",
+              "default": 1.0
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "backdropBlur": {
+          "description": "Backdrop blur effect. Applies gaussian blur to the area behind the component.",
+          "type": "object",
+          "properties": {
+            "radius": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Backdrop blur radius in vp. Range [0, +inf). Values less than 0 are treated as 0."
+            },
+            "grayscale": {
+              "type": "array",
+              "description": "Grayscale blur parameters. Two numbers in [0, 127]. First adjusts black brightness (brightening), second adjusts white darkness (darkening). Larger values = more obvious. Default: [0, 0] (no adjustment).",
+              "items": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 127
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "default": [
+                0,
+                0
+              ]
+            }
+          },
+          "required": [
+            "radius"
+          ],
+          "additionalProperties": false
+        },
+        "opacity": {
+          "description": "Component opacity (alpha). Number in [0, 1]: 0 fully transparent, 1 fully opaque. Default: 1. Values below 0 are treated as 0; values above 1 are treated as 1.",
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 1
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "rotate": {
+          "description": "Component 3D rotation. Euler angle model (angleX/angleY/angleZ) plus rotation center (centerX/centerY/centerZ) and perspective distance. Aligns with ArkUI RotateAngleOptions (API 20+).",
+          "type": "object",
+          "properties": {
+            "angleX": {
+              "description": "Rotation angle around X axis in degrees (euler angle). Accepts number (e.g. 45) or string (e.g. '45deg'). Default 0.",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ],
+              "default": 0
+            },
+            "angleY": {
+              "description": "Rotation angle around Y axis in degrees. Accepts number (e.g. 45) or string (e.g. '45deg'). Default 0.",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ],
+              "default": 0
+            },
+            "angleZ": {
+              "description": "Rotation angle around Z axis in degrees. Common for 2D rotation. Accepts number (e.g. 45) or string (e.g. '45deg'). Default 0.",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ],
+              "default": 0
+            },
+            "centerX": {
+              "default": "50%",
+              "description": "Rotation center X. Percentage string (e.g. '50%') or vp number. Default '50%' (horizontal center).",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            },
+            "centerY": {
+              "default": "50%",
+              "description": "Rotation center Y. Default '50%'.",
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            },
+            "centerZ": {
+              "description": "Rotation center Z. Default 0.",
+              "default": 0,
+              "$ref": "#/$defs/ExtendedDynamicNumber"
+            },
+            "perspective": {
+              "description": "Perspective distance for 3D rotation. Default 0.",
+              "default": 0,
+              "$ref": "#/$defs/ExtendedDynamicNumber"
+            }
+          },
+          "additionalProperties": false
+        },
+        "scale": {
+          "description": "Component X/Y axis scale ratio. Simplified to x/y (no z axis). Default 1 (no scale). 0 = invisible on that axis (ArkUI native behavior).",
+          "type": "object",
+          "properties": {
+            "x": {
+              "description": "X axis scale factor. 1 = no scale. Default 1.",
+              "default": 1,
+              "$ref": "#/$defs/ExtendedDynamicNumber"
+            },
+            "y": {
+              "description": "Y axis scale factor. 1 = no scale. Default 1.",
+              "default": 1,
+              "$ref": "#/$defs/ExtendedDynamicNumber"
+            }
+          },
+          "additionalProperties": false
+        },
+        "translate": {
+          "description": "Component X/Y axis translation. Simplified to x/y (no z axis). Supports number (vp) and string (percentage). Default 0.",
+          "type": "object",
+          "properties": {
+            "x": {
+              "description": "X axis translation. Number (vp) or string (percentage like '50%'). Default 0.",
+              "default": 0,
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            },
+            "y": {
+              "description": "Y axis translation. Default 0.",
+              "default": 0,
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            }
+          },
           "additionalProperties": false
         }
       },
-      "required": ["event"],
+      "additionalProperties": true
+    },
+    "GetRadioValueArgs": {
+      "description": "Arguments for 'getRadioValue' extended function",
+      "type": "object",
+      "properties": {
+        "group": {
+          "description": "Radio group name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "group"
+      ],
       "additionalProperties": false
+    },
+    "GetCheckboxGroupValuesArgs": {
+      "description": "Arguments for 'getCheckboxGroupValues' extended function",
+      "type": "object",
+      "properties": {
+        "group": {
+          "description": "CheckboxGroup group name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "group"
+      ],
+      "additionalProperties": false
+    },
+    "GetToggleValueArgs": {
+      "description": "Arguments for 'getToggleValue' extended function",
+      "type": "object",
+      "properties": {
+        "componentId": {
+          "description": "Target Toggle component ID",
+          "type": "string"
+        }
+      },
+      "required": [
+        "componentId"
+      ],
+      "additionalProperties": false
+    },
+    "GetSelectValueArgs": {
+      "description": "Arguments for 'getSelectValue' extended function",
+      "type": "object",
+      "properties": {
+        "componentId": {
+          "description": "Target Select component ID",
+          "type": "string"
+        }
+      },
+      "required": [
+        "componentId"
+      ],
+      "additionalProperties": false
+    },
+    "BreakArgs": {
+      "description": "Arguments for 'break' extended function - breaks out of the current EventHandler chain",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {}
+    },
+    "SetDataModelArgs": {
+      "description": "Arguments for 'setDataModel' extended function - modifies data model values",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "JSON Pointer path to the data model location",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ],
+          "examples": [
+            "/ui/isLoading",
+            "/items/0/selected"
+          ]
+        },
+        "value": {
+          "description": "Value to set. Can be a literal value or an expression.",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "type": "array"
+            },
+            {
+              "type": "object"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        }
+      },
+      "required": [
+        "path",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "SetAttributesArgs": {
+      "description": "Arguments for 'setAttributes' extended function - modifies component attribute values in batch",
+      "type": "object",
+      "properties": {
+        "componentId": {
+          "description": "Target component ID whose attributes will be modified",
+          "type": "string"
+        },
+        "value": {
+          "description": "Object with attribute names as keys and attribute values as values. All specified attributes will be set on the target component.",
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "componentId",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "NavigateArgs": {
+      "description": "Arguments for 'navigate' extended function - performs NavContainer sub-page navigation. Use 'componentId' and 'targetComponentId' parameters.",
+      "type": "object",
+      "properties": {
+        "componentId": {
+          "description": "Target NavContainer component ID to operate on",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        },
+        "targetComponentId": {
+          "description": "Target sub-page component ID to navigate to",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/ExtendedDynamicValueRef"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "EventContext": {
+      "description": "Context information automatically injected when an event is triggered. Available as $context in expressions within event handlers.",
+      "type": "object",
+      "properties": {
+        "componentId": {
+          "description": "ID of the component that triggered the event",
+          "type": "string"
+        },
+        "eventData": {
+          "description": "Event-specific data, type varies by event and component",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ClickEventData"
+            },
+            {
+              "$ref": "#/$defs/TextInputChangeEventData"
+            },
+            {
+              "$ref": "#/$defs/RadioChangeEventData"
+            },
+            {
+              "$ref": "#/$defs/CheckboxChangeEventData"
+            },
+            {
+              "$ref": "#/$defs/CheckboxGroupChangeEventData"
+            },
+            {
+              "$ref": "#/$defs/TabsChangeEventData"
+            },
+            {
+              "$ref": "#/$defs/ToggleChangeEventData"
+            },
+            {
+              "$ref": "#/$defs/SelectEventData"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "componentId"
+      ]
+    },
+    "ClickEventData": {
+      "description": "Event data for onClick event",
+      "type": "object",
+      "properties": {
+        "x": {
+          "description": "X coordinate of the click",
+          "type": "number"
+        },
+        "y": {
+          "description": "Y coordinate of the click",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ]
+    },
+    "TextInputChangeEventData": {
+      "description": "Event data for onChange event (TextInput)",
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "Current text content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "RadioChangeEventData": {
+      "description": "Event data for Radio onChange event",
+      "type": "object",
+      "properties": {
+        "isChecked": {
+          "description": "Current checked state",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "isChecked"
+      ]
+    },
+    "CheckboxChangeEventData": {
+      "description": "Event data for Checkbox onChange event",
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "Current checked state",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "CheckboxGroupChangeEventData": {
+      "description": "Event data for CheckboxGroup onChange event",
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "Names of all checked checkboxes",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "description": "Select all status: All, Part, or None",
+          "type": "string",
+          "enum": [
+            "All",
+            "Part",
+            "None"
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "status"
+      ]
+    },
+    "TabsChangeEventData": {
+      "description": "Event data for Tabs onChange event",
+      "type": "object",
+      "properties": {
+        "index": {
+          "description": "Index of the currently active tab, starting from 0",
+          "type": "number"
+        }
+      },
+      "required": [
+        "index"
+      ]
+    },
+    "ToggleChangeEventData": {
+      "description": "Event data for Toggle onChange event",
+      "type": "object",
+      "properties": {
+        "isOn": {
+          "description": "Current toggle state",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "isOn"
+      ]
+    },
+    "SelectEventData": {
+      "description": "Event data for Select onSelect event",
+      "type": "object",
+      "properties": {
+        "index": {
+          "description": "Index of the selected option, starting from 0",
+          "type": "number"
+        },
+        "value": {
+          "description": "Text of the selected option",
+          "type": "string"
+        }
+      },
+      "required": [
+        "index",
+        "value"
+      ]
+    },
+    "VariableScope": {
+      "description": "Global variables accessible in any expression. Includes DataModel variables (surface-level scope, one instance per surface) and system variables (truly global).",
+      "type": "object",
+      "properties": {
+        "__dataModel": {
+          "description": "Data model object containing all application data for the current surface. Surface-level scope (not shared across surfaces). Access using dot notation: $__dataModel.path.to.property",
+          "type": "object"
+        },
+        "__widthBreakpoint": {
+          "description": "Current window breakpoint category",
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "enumDescriptions": {
+            "xs": "Small screens < 576px",
+            "sm": "Small-large screens 576px - 768px",
+            "md": "Medium screens 768px - 992px",
+            "lg": "Large screens 992px - 1200px",
+            "xl": "Extra large screens > 1200px"
+          }
+        },
+        "__colorMode": {
+          "description": "Current theme color mode",
+          "type": "string",
+          "enum": [
+            "light",
+            "dark"
+          ]
+        }
+      }
+    },
+    "LocalVariableScope": {
+      "description": "Local variables available in specific contexts",
+      "type": "object",
+      "properties": {
+        "index": {
+          "description": "Current iteration index (starts from 0). Available in parent components that use template to generate child components (Row, Column, List, Stack, Grid, Tabs).",
+          "type": "number"
+        },
+        "item": {
+          "description": "Current iteration item data. Type is 'any' (can be a primitive or object). Available in parent components that use template to generate child components.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "as-binding": {
+          "description": "Named variable binding for EventHandler return values. EventHandler with 'as' field (e.g., 'as': 'validResult') creates a local variable accessible as $validResult in subsequent EventHandlers within the same event. Scoped to the current event's handler chain, released when all handlers complete.",
+          "type": "object",
+          "additionalProperties": true
+        },
+        "context": {
+          "description": "Event context information automatically injected when event is triggered. Access via $context.componentId and $context.eventData.",
+          "$ref": "#/$defs/EventContext"
+        }
+      }
+    },
+    "ExpressionOperator": {
+      "description": "Operators supported in expressions, listed by precedence (highest to lowest). See expression_grammar.ebnf for complete syntax.",
+      "type": "object",
+      "properties": {
+        "precedence": {
+          "description": "Operator precedence from 1 (highest) to 10 (lowest)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "level": {
+                "type": "number"
+              },
+              "operators": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "symbol": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "example": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "default": {
+        "precedence": [
+          {
+            "level": 1,
+            "description": "Parentheses",
+            "operators": [
+              {
+                "symbol": "()",
+                "description": "Parentheses for grouping",
+                "example": "{{ ($parentWidth - 20) / 2 }}"
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "description": "Member access",
+            "operators": [
+              {
+                "symbol": ".",
+                "description": "Dot notation for property access",
+                "example": "{{ $user.name }}"
+              },
+              {
+                "symbol": "[]",
+                "description": "Bracket notation for property/array access",
+                "example": "{{ $items[0] }}"
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "description": "Logical NOT",
+            "operators": [
+              {
+                "symbol": "!",
+                "description": "Logical negation",
+                "example": "{{ !$isDisabled }}"
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "description": "Multiplicative",
+            "operators": [
+              {
+                "symbol": "*",
+                "description": "Multiplication",
+                "example": "{{ $price * $quantity }}"
+              },
+              {
+                "symbol": "/",
+                "description": "Division",
+                "example": "{{ $total / $count }}"
+              },
+              {
+                "symbol": "%",
+                "description": "Modulo (remainder)",
+                "example": "{{ $index % 2 }}"
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "description": "Additive",
+            "operators": [
+              {
+                "symbol": "+",
+                "description": "Addition or string concatenation",
+                "example": "{{ $basePrice + $tax }}"
+              },
+              {
+                "symbol": "-",
+                "description": "Subtraction",
+                "example": "{{ $max - $min }}"
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "description": "Relational",
+            "operators": [
+              {
+                "symbol": ">",
+                "description": "Greater than",
+                "example": "{{ $age > 18 }}"
+              },
+              {
+                "symbol": ">=",
+                "description": "Greater than or equal",
+                "example": "{{ $score >= 60 }}"
+              },
+              {
+                "symbol": "<",
+                "description": "Less than",
+                "example": "{{ $count < 10 }}"
+              },
+              {
+                "symbol": "<=",
+                "description": "Less than or equal",
+                "example": "{{ $price <= 100 }}"
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "description": "Equality",
+            "operators": [
+              {
+                "symbol": "==",
+                "description": "Equal to",
+                "example": "{{ $status == 'active' }}"
+              },
+              {
+                "symbol": "!=",
+                "description": "Not equal to",
+                "example": "{{ $type != 'admin' }}"
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "description": "Logical AND",
+            "operators": [
+              {
+                "symbol": "&&",
+                "description": "Logical conjunction",
+                "example": "{{ $isLogin && !$isLocked }}"
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "description": "Logical OR",
+            "operators": [
+              {
+                "symbol": "||",
+                "description": "Logical disjunction",
+                "example": "{{ $isAdmin || $isModerator }}"
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "description": "Ternary conditional",
+            "operators": [
+              {
+                "symbol": "?:",
+                "description": "Conditional (if-then-else)",
+                "example": "{{ $age >= 18 ? 'adult' : 'minor' }}"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "DataType": {
+      "description": "Data types supported in expressions",
+      "type": "object",
+      "properties": {
+        "string": {
+          "description": "Text strings. Use single quotes for literals: 'hello world'. Use + operator for string concatenation: 'Hello, ' + $name",
+          "type": "string",
+          "examples": [
+            "'hello'",
+            "'user123'",
+            "'Hello, ' + $name"
+          ]
+        },
+        "number": {
+          "description": "Numeric values (integers or floating-point)",
+          "type": "number",
+          "examples": [
+            "42",
+            "3.14",
+            "-10",
+            "0.5"
+          ]
+        },
+        "boolean": {
+          "description": "Boolean values. Must be lowercase: true or false",
+          "type": "boolean",
+          "enum": [
+            true,
+            false
+          ],
+          "examples": [
+            "true",
+            "false"
+          ]
+        }
+      }
+    },
+    "ExpressionBuiltinFunction": {
+      "description": "Builtin functions available only inside expressions {{ }}. Distinct from extendedFunctions which are EventHandler chain calls. Currently only size() is supported.",
+      "type": "object",
+      "properties": {
+        "size": {
+          "description": "Returns the length of an array. Parameter type: array. Returns 0 when the argument is not an array.",
+          "type": "object",
+          "properties": {
+            "syntax": {
+              "const": "size(arr)"
+            },
+            "parameterType": {
+              "const": "array"
+            },
+            "returnType": {
+              "const": "number"
+            },
+            "examples": {
+              "description": "Example expression strings for the size function.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                "{{ size($items) }}",
+                "{{ size($items) + ' items' }}"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ExpressionTypeCoercion": {
+      "description": "Automatic type coercion rules for expression operators. Type coercion failure returns empty string \"\".",
+      "type": "object",
+      "properties": {
+        "falsyDefinition": {
+          "description": "Falsy values: false, 0, '' (empty string). All other values are truthy.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "false",
+            "0",
+            "''"
+          ]
+        },
+        "addition": {
+          "description": "Addition operator + rules. If either operand is string, concatenate (convert the other to string); otherwise, arithmetic addition (boolean converts to number).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": "string"
+              },
+              "rule": {
+                "type": "string"
+              },
+              "examples": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": [
+            {
+              "operation": "string + string",
+              "rule": "No conversion, string concatenation",
+              "examples": [
+                "'Hello, ' + $name → 'Hello, Alice'"
+              ]
+            },
+            {
+              "operation": "string + number",
+              "rule": "number to string, concatenate",
+              "examples": [
+                "'count: ' + 3 → 'count: 3'"
+              ]
+            },
+            {
+              "operation": "string + boolean",
+              "rule": "boolean to string, concatenate",
+              "examples": [
+                "'flag: ' + true → 'flag: true'"
+              ]
+            },
+            {
+              "operation": "number + string",
+              "rule": "number to string, concatenate",
+              "examples": [
+                "3 + ' items' → '3 items'"
+              ]
+            },
+            {
+              "operation": "boolean + string",
+              "rule": "boolean to string, concatenate",
+              "examples": [
+                "true + ' yes' → 'true yes'"
+              ]
+            },
+            {
+              "operation": "number + number",
+              "rule": "No conversion, arithmetic addition",
+              "examples": [
+                "3 + 5 → 8"
+              ]
+            },
+            {
+              "operation": "boolean + number",
+              "rule": "boolean to number (true=1, false=0), arithmetic addition",
+              "examples": [
+                "true + 2 → 3"
+              ]
+            },
+            {
+              "operation": "number + boolean",
+              "rule": "boolean to number (true=1, false=0), arithmetic addition",
+              "examples": [
+                "5 + false → 5"
+              ]
+            },
+            {
+              "operation": "boolean + boolean",
+              "rule": "Both to number, arithmetic addition",
+              "examples": [
+                "true + true → 2"
+              ]
+            }
+          ]
+        },
+        "arithmetic": {
+          "description": "Arithmetic operators - * / % rules. All operands convert to number. Boolean converts directly, string attempts conversion, failure returns \"\".",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": "string"
+              },
+              "rule": {
+                "type": "string"
+              },
+              "examples": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": [
+            {
+              "operation": "number - number",
+              "rule": "No conversion, direct calculation",
+              "examples": [
+                "10 - 3 → 7"
+              ]
+            },
+            {
+              "operation": "boolean - number",
+              "rule": "boolean to number",
+              "examples": [
+                "true - 1 → 0"
+              ]
+            },
+            {
+              "operation": "number - boolean",
+              "rule": "boolean to number",
+              "examples": [
+                "5 - false → 5"
+              ]
+            },
+            {
+              "operation": "boolean - boolean",
+              "rule": "Both to number",
+              "examples": [
+                "true - false → 1"
+              ]
+            },
+            {
+              "operation": "string(numeric) - number",
+              "rule": "string to number, then calculate",
+              "examples": [
+                "'10' - 3 → 7"
+              ]
+            },
+            {
+              "operation": "number - string(numeric)",
+              "rule": "string to number, then calculate",
+              "examples": [
+                "10 - '3' → 7"
+              ]
+            },
+            {
+              "operation": "string(non-numeric) - number",
+              "rule": "Conversion failure, returns \"\"",
+              "examples": [
+                "'abc' - 3 → \"\""
+              ]
+            },
+            {
+              "operation": "string - string",
+              "rule": "Both attempt number conversion, either failure returns \"\"",
+              "examples": [
+                "'10' - '3' → 7",
+                "'abc' - '3' → \"\""
+              ]
+            }
+          ]
+        },
+        "comparison": {
+          "description": "Comparison operators > >= < <= rules. Same type string: dictionary order; otherwise: convert to number, string conversion failure returns \"\".",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": "string"
+              },
+              "rule": {
+                "type": "string"
+              },
+              "examples": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": [
+            {
+              "operation": "number > number",
+              "rule": "No conversion, numeric comparison",
+              "examples": [
+                "10 > 3 → true"
+              ]
+            },
+            {
+              "operation": "string > string",
+              "rule": "Dictionary (lexicographic) order comparison",
+              "examples": [
+                "'abc' > 'abb' → true"
+              ]
+            },
+            {
+              "operation": "boolean > boolean",
+              "rule": "Both to number",
+              "examples": [
+                "true > false → true"
+              ]
+            },
+            {
+              "operation": "number > boolean",
+              "rule": "boolean to number",
+              "examples": [
+                "2 > true → true"
+              ]
+            },
+            {
+              "operation": "boolean > number",
+              "rule": "boolean to number",
+              "examples": [
+                "false > 0 → false"
+              ]
+            },
+            {
+              "operation": "string(numeric) > number",
+              "rule": "string to number, then compare",
+              "examples": [
+                "'20' > 18 → true"
+              ]
+            },
+            {
+              "operation": "number > string(numeric)",
+              "rule": "string to number, then compare",
+              "examples": [
+                "18 > '10' → true"
+              ]
+            },
+            {
+              "operation": "string(non-numeric) > number",
+              "rule": "Conversion failure, returns \"\"",
+              "examples": [
+                "'abc' > 3 → \"\""
+              ]
+            }
+          ]
+        },
+        "equality": {
+          "description": "Equality operators == != rules. Same type: direct comparison; different types: boolean to number or string, string attempts number conversion.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": "string"
+              },
+              "rule": {
+                "type": "string"
+              },
+              "examples": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": [
+            {
+              "operation": "same type == same type",
+              "rule": "No conversion, direct value comparison",
+              "examples": [
+                "3 == 3 → true",
+                "'a' == 'b' → false"
+              ]
+            },
+            {
+              "operation": "number == boolean",
+              "rule": "boolean to number",
+              "examples": [
+                "1 == true → true",
+                "0 == false → true"
+              ]
+            },
+            {
+              "operation": "string == boolean",
+              "rule": "boolean to string",
+              "examples": [
+                "'true' == true → true",
+                "'false' == false → true"
+              ]
+            },
+            {
+              "operation": "string(numeric) == number",
+              "rule": "string to number, then compare",
+              "examples": [
+                "'42' == 42 → true"
+              ]
+            },
+            {
+              "operation": "number == string(numeric)",
+              "rule": "string to number, then compare",
+              "examples": [
+                "42 == '42' → true"
+              ]
+            },
+            {
+              "operation": "string(non-numeric) == number",
+              "rule": "Conversion failure, returns false (!= returns true)",
+              "examples": [
+                "'abc' == 42 → false"
+              ]
+            }
+          ]
+        },
+        "logical": {
+          "description": "Logical operators && || rules. Short-circuit evaluation, returns actual value (not necessarily boolean).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": "string"
+              },
+              "rule": {
+                "type": "string"
+              },
+              "examples": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": [
+            {
+              "operation": "truthy && value",
+              "rule": "Returns value (right operand)",
+              "examples": [
+                "$isLogin && $userName → $userName's value"
+              ]
+            },
+            {
+              "operation": "falsy && value",
+              "rule": "Returns falsy value (short-circuit)",
+              "examples": [
+                "false && $name → false"
+              ]
+            },
+            {
+              "operation": "truthy || value",
+              "rule": "Returns truthy value (short-circuit)",
+              "examples": [
+                "$name || 'default' → $name's value"
+              ]
+            },
+            {
+              "operation": "falsy || value",
+              "rule": "Returns value (right operand)",
+              "examples": [
+                "0 || 42 → 42"
+              ]
+            }
+          ]
+        },
+        "logicalNotAndTernary": {
+          "description": "Logical NOT ! and ternary conditional ? : rules. Uses falsy definition (false, 0, '').",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": "string"
+              },
+              "rule": {
+                "type": "string"
+              },
+              "examples": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": [
+            {
+              "operation": "!falsy",
+              "rule": "Returns true",
+              "examples": [
+                "!false → true",
+                "!0 → true",
+                "!'' → true"
+              ]
+            },
+            {
+              "operation": "!truthy",
+              "rule": "Returns false",
+              "examples": [
+                "!true → false",
+                "!1 → false",
+                "!'hello' → false"
+              ]
+            },
+            {
+              "operation": "truthy ? a : b",
+              "rule": "Returns a",
+              "examples": [
+                "$count ? $count + ' items' : 'empty'"
+              ]
+            },
+            {
+              "operation": "falsy ? a : b",
+              "rule": "Returns b",
+              "examples": [
+                "0 ? 'yes' : 'no' → 'no'"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "PathSyntax": {
+      "description": "Path syntax for accessing data in the data model. Three path types: absolute, relative, and JSON Pointer.",
+      "type": "object",
+      "properties": {
+        "absolutePath": {
+          "description": "Absolute path starting from data model root using $__dataModel prefix. Available in any expression.",
+          "syntax": "$__dataModel.path.to.property",
+          "examples": [
+            "{{ $__dataModel.user.name }}",
+            "{{ $__dataModel.items[0].price }}"
+          ],
+          "notes": "Must use $__dataModel prefix. Use . for property access. Use [] for array index access only."
+        },
+        "relativePath": {
+          "description": "Relative path from current scope using $ prefix. Only available in sub-component templates (Row, Column, List, Stack, Grid, Tabs).",
+          "syntax": "$propertyName",
+          "examples": [
+            "{{ $item.fieldName }}",
+            "{{ $index }}",
+            "{{ $items[$index] }}"
+          ],
+          "notes": "Uses $ prefix. In sub-component templates, $item refers to current iteration item and $index to current iteration index. Customizable via indexVar/itemVar."
+        },
+        "jsonPointer": {
+          "description": "JSON Pointer syntax using ${/path/to/value}. Equivalent to $__dataModel prefix but uses / separator instead of dot notation. Available in any expression.",
+          "syntax": "${/json/pointer/path}",
+          "examples": [
+            "{{ ${/user/profile/name} }}",
+            "{{ ${/items/0/selected} }}"
+          ],
+          "notes": "Equivalent to absolute path: ${/user/name} ≡ $__dataModel.user.name. Uses / as separator. Distinct from A2UI native 'path' attribute which uses JSON Pointer as literal values without expression support."
+        },
+        "arrayAccess": {
+          "description": "Array element access using bracket notation",
+          "syntax": "$arrayName[index] or $arrayName[$indexVariable]",
+          "examples": [
+            "{{ $items[0] }}",
+            "{{ $items[$index] }}",
+            "{{ $__dataModel.users[$userId].name }}"
+          ],
+          "notes": "Index can be a number constant or a variable. Supports chain access like $items[0].user.name"
+        }
+      }
+    },
+    "ExpressionReactivity": {
+      "description": "Reactive expressions automatically re-evaluate when referenced variables change. Only global system variables ($__widthBreakpoint, $__colorMode) and DataModel variables ($__dataModel.xxx) are reactive. Local variables ($item, $index, $context, as-binding) are NOT reactive.",
+      "type": "object",
+      "properties": {
+        "behavior": {
+          "description": "When a reactive variable used in an expression changes, the expression automatically re-evaluates and updates the associated property or style",
+          "type": "string"
+        },
+        "updateScope": {
+          "description": "Reactive updates apply to component properties (content, text, condition, visible, etc.) and component style properties (fontSize, fontColor, width, etc.)",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "component properties",
+              "style properties"
+            ]
+          }
+        },
+        "evaluationFailure": {
+          "description": "When expression evaluation fails, returns empty string \"\" without interrupting rendering",
+          "type": "string"
+        },
+        "reservedCharacter": {
+          "description": "# character is reserved for future use to disable reactivity on specific expressions",
+          "type": "string"
+        }
+      },
+      "examples": [
+        {
+          "description": "Responsive font size based on window breakpoint",
+          "expression": "{{ $__widthBreakpoint == 'sm' ? 14 : 18 }}",
+          "triggers": [
+            "$__widthBreakpoint change"
+          ]
+        },
+        {
+          "description": "Dynamic style based on data model",
+          "expression": "{{ $__dataModel.theme.primaryColor }}",
+          "triggers": [
+            "$__dataModel.theme.primaryColor change"
+          ]
+        },
+        {
+          "description": "Conditional visibility based on array emptiness",
+          "expression": "{{ size($items) > 0 }}",
+          "triggers": [
+            "$items array change"
+          ]
+        }
+      ]
+    },
+    "Action": {
+      "type": "object",
+      "description": "Button action for form submission or function call. Takes priority over event listeners (onClick).",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Submit event to server",
+          "properties": {
+            "event": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Event name"
+                },
+                "context": {
+                  "type": "object",
+                  "description": "Optional context data"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "required": [
+            "event"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Call local function",
+          "properties": {
+            "functionCall": {
+              "type": "object",
+              "properties": {
+                "call": {
+                  "type": "string",
+                  "description": "Function name"
+                },
+                "args": {
+                  "type": "object",
+                  "description": "Optional function arguments"
+                }
+              },
+              "required": [
+                "call"
+              ]
+            }
+          },
+          "required": [
+            "functionCall"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "components": {
+    "Text": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "component": {
+              "const": "Text"
+            },
+            "content": {
+              "description": "Text content to display. Supports expression binding for dynamic content.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            }
+          },
+          "required": [
+            "component",
+            "content"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "textOverflow": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "none",
+                        "clip",
+                        "ellipsis",
+                        "marquee"
+                      ],
+                      "default": "clip"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Text overflow behavior when content exceeds maxLines. Default: 'clip'. 'none': truncate at max lines. 'clip': same as none. 'ellipsis': show ellipsis for overflow. 'marquee': scroll text in single line. Must be used with maxLines."
+                },
+                "decoration": {
+                  "type": "object",
+                  "description": "Text decoration line style. Object {type, color, style, thicknessScale}. Default: {type:'none', color:'black', style:'solid', thicknessScale:1.0}. type: none/underline/overline/linethrough. style: solid/double/dotted/dashed/wavy.",
+                  "properties": {
+                    "type": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "none",
+                            "underline",
+                            "overline",
+                            "linethrough"
+                          ],
+                          "default": "none"
+                        },
+                        {
+                          "$ref": "#/$defs/ExtendedDynamicValueRef"
+                        }
+                      ]
+                    },
+                    "color": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "style": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "solid",
+                            "double",
+                            "dotted",
+                            "dashed",
+                            "wavy"
+                          ],
+                          "default": "solid"
+                        },
+                        {
+                          "$ref": "#/$defs/ExtendedDynamicValueRef"
+                        }
+                      ]
+                    },
+                    "thicknessScale": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber",
+                      "default": 1.0
+                    }
+                  }
+                },
+                "fontSize": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "default": 16,
+                  "description": "Font size in fp. Default: 16fp."
+                },
+                "fontWeight": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "default": 400,
+                      "minimum": 100
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Font weight. Default: 400. Number [100-900] in steps of 100, or string: keyword ('lighter'(100), 'normal'(400), 'regular'(400), 'medium'(500), 'bold'(700), 'bolder'(900)) or numeric string ('100'-'900' in steps of 100). Invalid values fall back to default."
+                },
+                "fontColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Font color in hex format (e.g. '#333333')."
+                },
+                "textAlign": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "start",
+                        "center",
+                        "end",
+                        "justify"
+                      ],
+                      "default": "start"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Horizontal text alignment. Default: 'start'. Options: start (align leading), center, end (align trailing), justify (both edges)."
+                },
+                "maxLines": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Maximum number of text lines. Default: inf (no limit when unset or invalid). Range: [0, inf]. Use with textOverflow for overflow behavior."
+                },
+                "wordBreak": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "normal",
+                        "breakAll",
+                        "breakWord",
+                        "hyphenation"
+                      ],
+                      "default": "breakWord"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Word break rule. Default: 'breakWord'. 'normal': CJK breaks anywhere, non-CJK at whitespace. 'breakAll': break anywhere. 'breakWord': prefer word boundaries, fallback to anywhere. 'hyphenation': try hyphen at line end."
+                },
+                "maxFontSize": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Maximum adaptive font size in fp. Must be used with minFontSize and maxLines or layout constraints. No effect when maxFontSize <= 0 or maxFontSize < minFontSize."
+                },
+                "minFontSize": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Minimum adaptive font size in fp. Must be used with maxFontSize and maxLines or layout constraints. No effect when minFontSize <= 0."
+                },
+                "fontScaleMode": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "followSystem",
+                        "custom"
+                      ],
+                      "default": "followSystem"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Font scaling mode. Default: 'followSystem'. 'followSystem': use system setting. 'custom': use custom minFontScale/maxFontScale."
+                },
+                "minFontScale": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Minimum font scale ratio. Default: follow system. Range: [0, 1]. Values < 0 treated as 0, > 1 treated as 1."
+                },
+                "maxFontScale": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "minimum": 1
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Maximum font scale ratio. Default: follow system. Range: [1, inf). Values < 1 treated as 1."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Display component for rendering text content. Supports font styling, color, text overflow, word break, and adaptive font sizing."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Image": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Image component for displaying local, network, or resource images",
+          "properties": {
+            "component": {
+              "const": "Image"
+            },
+            "src": {
+              "description": "Image source URL or local resource path. Supports expression binding for dynamic image source. SVG via resource path is supported; base64-encoded SVG data URIs (e.g., data:image/svg+xml;base64,...) are not supported (rendering layer cannot parse inline SVG).",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            }
+          },
+          "required": [
+            "component",
+            "src"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "objectFit": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "fill",
+                        "contain",
+                        "cover",
+                        "auto",
+                        "none",
+                        "scaleDown",
+                        "topStart",
+                        "top",
+                        "topEnd",
+                        "start",
+                        "center",
+                        "end",
+                        "bottomStart",
+                        "bottom",
+                        "bottomEnd",
+                        "matrix"
+                      ],
+                      "default": "cover"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Image fill mode. Default: 'cover'. 'fill': stretch to fill. 'contain': fit inside maintaining ratio. 'cover': fill covering bounds. 'auto': proportional scaling. 'none': original size centered. 'scaleDown': shrink or keep original. Also supports alignment positions: topStart/top/topEnd/start/center/end/bottomStart/bottom/bottomEnd, and 'matrix' for custom positioning."
+                },
+                "fillColor": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Image fill color for tinting. ResourceColor type, 0xARGB format hex string (e.g., '#FFFF0000' for opaque red). Effective on SVG: replaces SVG internal fill color. For PNG and other bitmaps: field is parsed but has no visual effect. When not declared, no tinting is applied, keeping original image colors."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Image component for displaying local, network, or resource images. Supports aspect ratio and various object-fit modes."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Divider": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Divider component for visually separating content areas",
+          "properties": {
+            "component": {
+              "const": "Divider"
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "strokeWidth": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "default": "1px",
+                  "description": "Divider line width. Default: '1px'. Number (unit: vp) or string with unit. Invalid values use default."
+                },
+                "vertical": {
+                  "$ref": "#/$defs/ExtendedDynamicBoolean",
+                  "default": false,
+                  "description": "Divider direction. Default: false (horizontal). true for vertical divider."
+                },
+                "color": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "default": "#33000000",
+                  "description": "Divider color in hex format. Default: light mode #33000000, dark mode #33FFFFFF."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Divider component for visually separating content areas. Supports horizontal/vertical orientation, custom width, and color."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Progress": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Progress bar component for displaying task completion progress",
+          "properties": {
+            "component": {
+              "const": "Progress"
+            },
+            "value": {
+              "description": "Current progress value. Default: 0.",
+              "$ref": "#/$defs/ExtendedDynamicNumber",
+              "default": 0
+            },
+            "total": {
+              "description": "Total progress value representing 100% completion.",
+              "$ref": "#/$defs/ExtendedDynamicNumber"
+            }
+          },
+          "required": [
+            "component",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Progress bar foreground color in hex format. Default: light mode '#FF0A59F7', dark mode '#FF317AF7'."
+                },
+                "type": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "linear",
+                        "ring",
+                        "eclipse",
+                        "scaleRing",
+                        "capsule"
+                      ],
+                      "default": "linear"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Progress bar style. Default: 'linear'. 'linear': horizontal bar. 'ring': circular ring without ticks. 'eclipse': moon-phase circular. 'scaleRing': clock-tick circular. 'capsule': capsule shape (vertical when height > width)."
+                },
+                "strokeWidth": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "default": 4
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Progress bar stroke width. Unit: vp. Default: 4.0vp. Only effective when type is linear, ring, or scaleRing; no effect when type is eclipse or capsule."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Progress bar component for displaying task completion. Supports linear, ring, eclipse, scaleRing, and capsule styles."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Button": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "component": {
+              "const": "Button"
+            },
+            "label": {
+              "description": "Text label displayed on the button. Supports expression binding.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "enabled": {
+              "description": "Whether the button is interactive. Default: true. Disabled buttons are visually distinct and non-clickable.",
+              "$ref": "#/$defs/ExtendedDynamicBoolean",
+              "default": true
+            },
+            "action": {
+              "$ref": "#/$defs/Action",
+              "description": "Button action for form submission or function call. Priority: action > event listeners (onClick). Only Button supports this property. Two formats: {event:{name, context?}} for server submission, or {functionCall:{call, args?}} for local function invocation."
+            }
+          },
+          "required": [
+            "component",
+            "label"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "fontColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Button text color in hex format."
+                },
+                "fontSize": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "default": 16,
+                  "description": "Font size in fp. Default: 16fp."
+                },
+                "fontWeight": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "default": 500
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Font weight. Default: 500. Number [100-900] in steps of 100, or string: keyword ('lighter'(100), 'normal'(400), 'regular'(400), 'medium'(500), 'bold'(700), 'bolder'(900)) or numeric string ('100'-'900' in steps of 100). Invalid values fall back to default."
+                },
+                "maxFontSize": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Maximum adaptive font size in fp. See Text.maxFontSize for usage rules."
+                },
+                "minFontSize": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Minimum adaptive font size in fp. Must be used with maxFontSize or layout constraints. No effect when minFontSize <= 0."
+                },
+                "fontScaleMode": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "followSystem",
+                        "custom"
+                      ]
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Font scaling mode. 'followSystem': use system setting. 'custom': use custom scale values."
+                },
+                "minFontScale": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Minimum font scale ratio. Range: [0, 1]."
+                },
+                "maxFontScale": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "minimum": 1
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Maximum font scale ratio. Range: [1, inf)."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Interactive component for user actions. Supports text label, enabled/disabled state, and action-based interaction (form submission or function call). Action takes priority over onClick event."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "TextInput": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "component": {
+              "const": "TextInput"
+            },
+            "text": {
+              "description": "Default text content pre-filled in the input field.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "placeholder": {
+              "description": "Placeholder hint text shown when the input is empty.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "enabled": {
+              "description": "Whether the input field is interactive. Default: true.",
+              "$ref": "#/$defs/ExtendedDynamicBoolean",
+              "default": true
+            },
+            "maxLength": {
+              "description": "Maximum number of characters allowed in the input.",
+              "$ref": "#/$defs/ExtendedDynamicNumber"
+            },
+            "type": {
+              "description": "Input type controlling keyboard and validation behavior. Default: 'normal'. Options: normal, number, phoneNumber, email, password, numberPassword, userName, newPassword, numberDecimal, url.",
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "normal",
+                    "number",
+                    "phoneNumber",
+                    "email",
+                    "password",
+                    "numberPassword",
+                    "userName",
+                    "newPassword",
+                    "numberDecimal",
+                    "url"
+                  ],
+                  "default": "normal"
+                },
+                {
+                  "$ref": "#/$defs/ExtendedDynamicValueRef"
+                }
+              ]
+            },
+            "onChange": {
+              "type": "array",
+              "description": "Event handlers triggered when the text value changes. Event data: {value: string}.",
+              "items": {
+                "$ref": "#/$defs/EventHandler"
+              }
+            }
+          },
+          "required": [
+            "component",
+            "type"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "placeholderColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Placeholder text color in hex format. Default: follows theme."
+                },
+                "cancelButton": {
+                  "type": "object",
+                  "properties": {
+                    "style": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "constant",
+                            "invisible",
+                            "input"
+                          ],
+                          "default": "input"
+                        },
+                        {
+                          "$ref": "#/$defs/ExtendedDynamicValueRef"
+                        }
+                      ]
+                    },
+                    "fontColor": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "fontSize": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    }
+                  },
+                  "description": "Clear button style on the right side. Object {style, fontColor, fontSize}. style: 'constant' (always show), 'invisible' (always hide), 'input' (show during input). Default style: 'input'."
+                },
+                "caretColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Text cursor color in hex format. Default: light mode '#FF0A59F7', dark mode '#5291FF'."
+                },
+                "selectedBackgroundColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Selected text highlight color in hex format. Default: 20% opacity."
+                },
+                "showUnderline": {
+                  "$ref": "#/$defs/ExtendedDynamicBoolean",
+                  "description": "Whether to show underline. Default: false. Only effective when type is 'normal'.",
+                  "default": false
+                },
+                "underlineColor": {
+                  "type": "object",
+                  "properties": {
+                    "typing": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "normal": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "error": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "disable": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    }
+                  },
+                  "description": "Underline colors by state. Object {typing, normal, error, disable}. Each value is a hex color string. All optional."
+                },
+                "fontSize": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Font size in fp. Default: 16fp.",
+                  "default": 16
+                },
+                "fontWeight": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Font weight. Default: 400 (normal). Number [100-900] in steps of 100, or enum: 'lighter'(100), 'normal'(400), 'regular'(400), 'medium'(500), 'bold'(700), 'bolder'(900).",
+                  "default": 400
+                },
+                "fontColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Text color in hex format. Default: light mode '#99000000', dark mode '#99FFFFFF'."
+                },
+                "textAlign": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "start",
+                        "center",
+                        "end",
+                        "justify"
+                      ],
+                      "default": "start"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Horizontal text alignment. Default: 'start'. Options: start, center, end, justify (treated as start)."
+                },
+                "maxFontSize": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Maximum adaptive font size in fp. See Text.maxFontSize for usage rules."
+                },
+                "minFontSize": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Minimum adaptive font size in fp. See Text.minFontSize for usage rules."
+                },
+                "wordBreak": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "normal",
+                        "breakAll",
+                        "breakWord",
+                        "hyphenation"
+                      ],
+                      "default": "normal"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Word break rule. Default: 'normal'. See Text.wordBreak for options."
+                },
+                "maxLines": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Maximum text lines. Default: 3. Only effective in inline edit mode. Range: (0, inf].",
+                  "default": 3
+                },
+                "fontScaleMode": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "followSystem",
+                        "custom"
+                      ]
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Font scaling mode. 'followSystem': use system setting. 'custom': use custom scale values."
+                },
+                "minFontScale": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Minimum font scale ratio. Range: [0, 1]."
+                },
+                "maxFontScale": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "minimum": 1
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Maximum font scale ratio. Range: [1, inf)."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Text input component for user text entry. Supports multiple input types (normal, number, email, password, etc.), placeholder, max length, and change event monitoring."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Toggle": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Toggle switch component for binary state (on/off)",
+          "properties": {
+            "component": {
+              "const": "Toggle"
+            },
+            "label": {
+              "description": "Text label displayed next to the toggle switch.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "isOn": {
+              "description": "Whether the toggle is in the on (active) state. Required.",
+              "$ref": "#/$defs/ExtendedDynamicBoolean"
+            },
+            "enabled": {
+              "description": "Whether the toggle is interactive. Default: true.",
+              "$ref": "#/$defs/ExtendedDynamicBoolean",
+              "default": true
+            },
+            "onChange": {
+              "type": "array",
+              "description": "Event handlers triggered when toggle state changes. Event data: {isOn: boolean}.",
+              "items": {
+                "$ref": "#/$defs/EventHandler"
+              }
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "selectedColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Background color when toggle is ON. Default: light '#330A59F7', dark '#33317AF7'."
+                },
+                "unSelectedColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Background color when toggle is OFF. Default: light '#0C000000', dark '#19FFFFFF'."
+                },
+                "switchPointColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Circular slider knob color in hex format."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Toggle switch component for binary on/off state. Supports label, enabled/disabled state, and custom colors for selected/unselected states."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Radio": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Radio button component for single selection",
+          "properties": {
+            "component": {
+              "const": "Radio"
+            },
+            "value": {
+              "description": "Text value of the radio button. Required.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "checked": {
+              "description": "Whether the radio button is currently checked.",
+              "$ref": "#/$defs/ExtendedDynamicBoolean"
+            },
+            "group": {
+              "description": "Group name for mutually exclusive selection. Radio buttons with the same group name are exclusive. Default: ''.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "onChange": {
+              "type": "array",
+              "description": "Event handlers triggered when checked state changes. Event data: {isChecked: boolean}.",
+              "items": {
+                "$ref": "#/$defs/EventHandler"
+              }
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "checkedBackgroundColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Background color when checked. Default: light '#FF0A59F7', dark '#FF317AF7'."
+                },
+                "unCheckedBorderColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Border color when unchecked. Default: light '#66000000', dark '#66FFFFFF'."
+                },
+                "indicatorColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Inner circle indicator color when checked. Default: '#FFFFFFFF'."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Radio button component for single selection within a mutually exclusive group. Supports custom indicator and checked/unchecked colors."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Checkbox": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Checkbox component for multiple selection",
+          "properties": {
+            "component": {
+              "const": "Checkbox"
+            },
+            "label": {
+              "description": "Text label displayed next to the checkbox.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "value": {
+              "description": "Semantic identifier for the checkbox. Not rendered visually. Used as the distinguishing value within a group; accessible via getCheckboxGroupValues in interaction context.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "group": {
+              "description": "Group name matching a CheckboxGroup component for collective control.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "select": {
+              "description": "Whether the checkbox is initially selected.",
+              "$ref": "#/$defs/ExtendedDynamicBoolean"
+            },
+            "onChange": {
+              "type": "array",
+              "description": "Event handlers triggered when selection state changes. Event data: {value: boolean}.",
+              "items": {
+                "$ref": "#/$defs/EventHandler"
+              }
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "selectedColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Checkbox color when selected, in hex format."
+                },
+                "unSelectedColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Checkbox color when not selected, in hex format."
+                },
+                "mark": {
+                  "type": "object",
+                  "properties": {
+                    "strokeColor": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "size": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    },
+                    "strokeWidth": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    }
+                  },
+                  "description": "Inner checkmark icon style. Object {strokeColor, size, strokeWidth}. All optional. strokeColor: hex color. size: icon size in vp (default: same as checkbox width). strokeWidth: icon line width in vp."
+                },
+                "shape": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "circle",
+                        "rounded_square"
+                      ],
+                      "default": "circle"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Checkbox shape. Default: 'circle'. 'circle': circular shape. 'rounded_square': rounded square shape."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Checkbox component for multiple selection. Must be paired with a CheckboxGroup for group control. Supports custom shape (circle/rounded_square) and mark styling."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "CheckboxGroup": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Checkbox group for controlling select all/select none state",
+          "properties": {
+            "component": {
+              "const": "CheckboxGroup"
+            },
+            "group": {
+              "description": "Group name shared by all Checkbox components in this group. Default: ''.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "selectAll": {
+              "description": "Whether to select all checkboxes in the group. Default: false.",
+              "$ref": "#/$defs/ExtendedDynamicBoolean",
+              "default": false
+            },
+            "onChange": {
+              "type": "array",
+              "description": "Event handlers triggered when group selection changes. Event data: {value: string[], status: 'All'|'Part'|'None'}.",
+              "items": {
+                "$ref": "#/$defs/EventHandler"
+              }
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "selectedColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Color when all or partially selected, in hex format."
+                },
+                "unSelectedColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Color when none selected, in hex format."
+                },
+                "mark": {
+                  "type": "object",
+                  "properties": {
+                    "strokeColor": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "size": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    },
+                    "strokeWidth": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    }
+                  },
+                  "description": "Inner checkmark icon style. Same structure as Checkbox.mark."
+                },
+                "checkboxShape": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "circle",
+                        "rounded_square"
+                      ],
+                      "default": "circle"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Default shape for all unconfigured checkboxes in the group. Default: 'circle'. 'circle': circular. 'rounded_square': rounded square. Individual Checkbox.shape overrides this."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Checkbox group component for controlling select-all/select-none state across multiple Checkbox components sharing the same group name."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Select": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Dropdown select menu for selecting among multiple options",
+          "properties": {
+            "component": {
+              "const": "Select"
+            },
+            "options": {
+              "description": "Dropdown menu items. Each item is {value: string, icon?: string, symbolIcon?: object}. value is required.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "$ref": "#/$defs/ExtendedDynamicString"
+                  },
+                  "icon": {
+                    "$ref": "#/$defs/ExtendedDynamicString"
+                  },
+                  "symbolIcon": {
+                    "type": "object",
+                    "properties": {
+                      "src": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "accountCircle",
+                              "add",
+                              "arrowBack",
+                              "arrowForward",
+                              "attachFile",
+                              "calendarToday",
+                              "call",
+                              "camera",
+                              "check",
+                              "close",
+                              "delete",
+                              "download",
+                              "edit",
+                              "event",
+                              "error",
+                              "fastForward",
+                              "favorite",
+                              "favoriteOff",
+                              "folder",
+                              "help",
+                              "home",
+                              "info",
+                              "locationOn",
+                              "lock",
+                              "lockOpen",
+                              "mail",
+                              "menu",
+                              "moreVert",
+                              "moreHoriz",
+                              "notificationsOff",
+                              "notifications",
+                              "pause",
+                              "payment",
+                              "person",
+                              "phone",
+                              "photo",
+                              "play",
+                              "print",
+                              "refresh",
+                              "rewind",
+                              "search",
+                              "send",
+                              "settings",
+                              "share",
+                              "shoppingCart",
+                              "skipNext",
+                              "skipPrevious",
+                              "star",
+                              "starHalf",
+                              "starOff",
+                              "stop",
+                              "upload",
+                              "visibility",
+                              "visibilityOff",
+                              "volumeDown",
+                              "volumeMute",
+                              "volumeOff",
+                              "volumeUp",
+                              "warning"
+                            ]
+                          },
+                          {
+                            "$ref": "#/$defs/ExtendedDynamicValueRef"
+                          }
+                        ]
+                      },
+                      "fontSize": {
+                        "$ref": "#/$defs/ExtendedDynamicNumber"
+                      },
+                      "fontWeight": {
+                        "$ref": "#/$defs/ExtendedDynamicNumber"
+                      },
+                      "fontColor": {
+                        "$ref": "#/$defs/ExtendedDynamicString"
+                      },
+                      "renderingStrategy": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "single",
+                              "multipleColor",
+                              "multipleOpacity"
+                            ]
+                          },
+                          {
+                            "$ref": "#/$defs/ExtendedDynamicValueRef"
+                          }
+                        ]
+                      },
+                      "effectStrategy": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "none",
+                              "scale",
+                              "hierarchical"
+                            ]
+                          },
+                          {
+                            "$ref": "#/$defs/ExtendedDynamicValueRef"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "selected": {
+              "description": "Index of the initially selected option.",
+              "$ref": "#/$defs/ExtendedDynamicNumber"
+            },
+            "value": {
+              "description": "Text displayed on the dropdown button. Auto-updates after selection.",
+              "$ref": "#/$defs/ExtendedDynamicString"
+            },
+            "onSelect": {
+              "type": "array",
+              "description": "Event handlers triggered when an option is selected. Event data: {index: number, value: string}.",
+              "items": {
+                "$ref": "#/$defs/EventHandler"
+              }
+            }
+          },
+          "required": [
+            "component",
+            "options",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "divider": {
+                  "type": "object",
+                  "properties": {
+                    "strokeWidth": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "startMargin": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    },
+                    "endMargin": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    },
+                    "color": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    }
+                  },
+                  "description": "Divider line between dropdown options. Object {strokeWidth, startMargin, endMargin, color}. Default: {strokeWidth:'1px', color:'#33182431'}."
+                },
+                "font": {
+                  "type": "object",
+                  "properties": {
+                    "size": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    },
+                    "weight": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "family": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "style": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "normal",
+                            "italic"
+                          ]
+                        },
+                        {
+                          "$ref": "#/$defs/ExtendedDynamicValueRef"
+                        }
+                      ]
+                    }
+                  },
+                  "description": "Dropdown button text style. Object {size, weight, family, style}. size: number in fp. weight: font weight. family: font list comma-separated. style: 'normal' (default) or 'italic'."
+                },
+                "fontColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Dropdown button text color in hex format."
+                },
+                "selectedOptionBgColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Background color of the selected dropdown option, in hex format."
+                },
+                "selectedOptionFont": {
+                  "type": "object",
+                  "properties": {
+                    "size": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    },
+                    "weight": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "family": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "style": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "normal",
+                            "italic"
+                          ]
+                        },
+                        {
+                          "$ref": "#/$defs/ExtendedDynamicValueRef"
+                        }
+                      ]
+                    }
+                  },
+                  "description": "Selected option text style. Object {size, weight, family, style}. Same structure as font."
+                },
+                "selectedOptionFontColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Text color of the selected dropdown option, in hex format."
+                },
+                "optionBgColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Background color of unselected dropdown options. Default: transparent."
+                },
+                "optionFont": {
+                  "type": "object",
+                  "properties": {
+                    "size": {
+                      "$ref": "#/$defs/ExtendedDynamicNumber"
+                    },
+                    "weight": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "family": {
+                      "$ref": "#/$defs/ExtendedDynamicString"
+                    },
+                    "style": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "normal",
+                            "italic"
+                          ]
+                        },
+                        {
+                          "$ref": "#/$defs/ExtendedDynamicValueRef"
+                        }
+                      ]
+                    }
+                  },
+                  "description": "Unselected option text style. Object {size, weight, family, style}. Same structure as font."
+                },
+                "optionFontColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Text color of unselected dropdown options, in hex format."
+                },
+                "space": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Spacing between dropdown button text and arrow icon in vp. Default: 8. Values <= 8 use default.",
+                  "default": 8
+                },
+                "arrowPosition": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "start",
+                        "end"
+                      ],
+                      "default": "end"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Arrow icon position relative to text. Default: 'end'. 'start': arrow before text. 'end': text before arrow."
+                },
+                "menuAlign": {
+                  "type": "object",
+                  "properties": {
+                    "alignType": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "start",
+                            "center",
+                            "end"
+                          ],
+                          "default": "start"
+                        },
+                        {
+                          "$ref": "#/$defs/ExtendedDynamicValueRef"
+                        }
+                      ]
+                    },
+                    "offset": {
+                      "type": "object",
+                      "properties": {
+                        "dx": {
+                          "$ref": "#/$defs/ExtendedDynamicNumber",
+                          "default": 0
+                        },
+                        "dy": {
+                          "$ref": "#/$defs/ExtendedDynamicNumber",
+                          "default": 0
+                        }
+                      }
+                    }
+                  },
+                  "description": "Dropdown menu alignment relative to button. Object {alignType, offset}. alignType: 'start' (default)/'center'/'end'. offset: {dx, dy} in vp, default {0, 0}."
+                },
+                "optionWidth": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Dropdown menu item width in vp. Default: 2 grid columns. Values < 56vp use default."
+                },
+                "optionHeight": {
+                  "$ref": "#/$defs/ExtendedDynamicNumber",
+                  "description": "Dropdown menu maximum height in vp. Default: 80% of available screen height. Value 0 uses default."
+                },
+                "menuBackgroundColor": {
+                  "$ref": "#/$defs/ExtendedDynamicString",
+                  "description": "Dropdown menu background color. Default: transparent."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Dropdown select menu for choosing among multiple options. Supports custom fonts, colors, divider styles, menu alignment, and selection event."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Row": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Horizontal layout component that arranges children in a row",
+          "properties": {
+            "component": {
+              "const": "Row"
+            },
+            "children": {
+              "description": "Child component ID list or template component ID and loop data path.",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "$ref": "#/$defs/TemplateChildren"
+                }
+              ]
+            },
+            "itemMargin": {
+              "description": "Horizontal spacing between children in vp. Default: 16.",
+              "type": "number",
+              "default": 16
+            },
+            "wrap": {
+              "description": "Line wrapping mode. Default: 'noWrap' (single-line, children constrained in container). 'wrap' allows multi-line layout with child wrapping.",
+              "type": "string",
+              "enum": [
+                "noWrap",
+                "wrap"
+              ],
+              "default": "noWrap"
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "justifyContent": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "start",
+                        "center",
+                        "end",
+                        "spaceBetween",
+                        "spaceAround",
+                        "spaceEvenly"
+                      ],
+                      "default": "start"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Horizontal alignment of children along main axis. Default: 'start'. Options: start, center, end, spaceBetween (edges flush, equal gaps), spaceAround (half-gap at edges), spaceEvenly (equal gaps everywhere)."
+                },
+                "alignItems": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "top",
+                        "center",
+                        "bottom"
+                      ],
+                      "default": "center"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Vertical alignment of children along cross axis. Default: 'center'. 'top': align to top. 'center': vertically centered. 'bottom': align to bottom."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Horizontal layout component that arranges children in a row. Supports template-based child generation, configurable item spacing (itemMargin), and single/multi-line wrapping (wrap)."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Column": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Vertical layout component that arranges children in a column",
+          "properties": {
+            "component": {
+              "const": "Column"
+            },
+            "children": {
+              "description": "Child component ID list or template component ID and loop data path.",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "$ref": "#/$defs/TemplateChildren"
+                }
+              ]
+            },
+            "itemMargin": {
+              "description": "Vertical spacing between children in vp. Default: 8.",
+              "type": "number",
+              "default": 8
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "justifyContent": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "start",
+                        "center",
+                        "end",
+                        "spaceBetween",
+                        "spaceAround",
+                        "spaceEvenly"
+                      ],
+                      "default": "start"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Vertical alignment of children along main axis. Default: 'start'. Options: start, center, end, spaceBetween (edges flush, equal gaps), spaceAround (half-gap at edges), spaceEvenly (equal gaps everywhere)."
+                },
+                "alignItems": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "start",
+                        "center",
+                        "end"
+                      ],
+                      "default": "start"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Horizontal alignment of children along cross axis. Default: 'start'. 'start': align to leading edge. 'center': horizontally centered. 'end': align to trailing edge."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Vertical layout component that arranges children in a column. Supports template-based child generation and configurable item spacing (itemMargin)."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "List": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Scrollable list component for efficiently displaying many items",
+          "properties": {
+            "component": {
+              "const": "List"
+            },
+            "children": {
+              "description": "Child component ID list or template component ID and loop data path.",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "$ref": "#/$defs/TemplateChildren"
+                }
+              ]
+            },
+            "space": {
+              "description": "Spacing between list items in vp. Default: 0. Negative values or values >= content area length are treated as default.",
+              "type": "number",
+              "default": 0
+            },
+            "onReachStart": {
+              "type": "array",
+              "description": "Event handlers triggered when list scrolls to the start position.",
+              "items": {
+                "$ref": "#/$defs/EventHandler"
+              }
+            },
+            "onReachEnd": {
+              "type": "array",
+              "description": "Event handlers triggered when list scrolls to the end position.",
+              "items": {
+                "$ref": "#/$defs/EventHandler"
+              }
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "listDirection": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "vertical",
+                        "horizontal"
+                      ],
+                      "default": "vertical"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "List arrangement direction. Default: 'vertical'. 'vertical': items stacked vertically. 'horizontal': items arranged horizontally."
+                },
+                "scrollBar": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "off",
+                        "auto",
+                        "on"
+                      ],
+                      "default": "auto"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Scroll bar visibility. Default: 'auto'. 'off': never show. 'auto': show on touch, hide after 2s. 'on': always visible."
+                },
+                "nestedScroll": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Nested scroll behavior for parent-child scroll coordination."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Scrollable list component for efficiently displaying many items. Supports template-based child generation, horizontal/vertical direction, scroll bar control, and reach-start/end events."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Stack": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Stack layout where children are stacked on top of each other. Children can be provided as a static component ID list or generated from a data array using a template.",
+          "properties": {
+            "component": {
+              "const": "Stack"
+            },
+            "children": {
+              "description": "Child component ID list or template component ID and loop data path.",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "$ref": "#/$defs/TemplateChildren"
+                }
+              ]
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "alignContent": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "topStart",
+                        "top",
+                        "topEnd",
+                        "start",
+                        "center",
+                        "end",
+                        "bottomStart",
+                        "bottom",
+                        "bottomEnd"
+                      ],
+                      "default": "center"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Alignment of children within the stack. Default: 'center'. Options: topStart, top, topEnd, start, center, end, bottomStart, bottom, bottomEnd."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Stack layout component where children are layered on top of each other. Supports static and template-based child generation, plus 9-position alignment."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Grid": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Grid layout component for arranging children in rows and columns",
+          "properties": {
+            "component": {
+              "const": "Grid"
+            },
+            "children": {
+              "description": "Child component ID list or template component ID and loop data path.",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "$ref": "#/$defs/TemplateChildren"
+                }
+              ]
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "columnsTemplate": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Column layout template using fr units (e.g. '1fr 1fr 2fr'). Each fr represents one column with proportional width. Default: 1 column."
+                },
+                "rowsTemplate": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Row layout template using fr units (e.g. '1fr 1fr 2fr'). Each fr represents one row with proportional height. Default: 1 row."
+                },
+                "columnsGap": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "default": 0,
+                      "minimum": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Gap between columns in vp. Default: 0. Range: [0, inf)."
+                },
+                "rowsGap": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "default": 0,
+                      "minimum": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Gap between rows in vp. Default: 0. Range: [0, inf)."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Grid layout component that arranges children in rows and columns using fr-based templates. Supports template-based child generation and configurable row/column gaps."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "NavContainer": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Navigation container component that manages multiple sub-pages in a stacked manner, displaying only the page at currentIndex at a time",
+          "properties": {
+            "component": {
+              "const": "NavContainer"
+            },
+            "children": {
+              "description": "Array of child component IDs, each representing a page.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "currentIndex": {
+              "description": "Index of the currently displayed sub-page. Default: 0.",
+              "type": "number"
+            }
+          },
+          "required": [
+            "component"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Tabs": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Container component that switches between content views through tabs. Each tab corresponds to a TabContent child. Supports horizontal/vertical orientation, scrollable mode, and template-based child generation.",
+          "properties": {
+            "component": {
+              "const": "Tabs"
+            },
+            "barPosition": {
+              "description": "Tab bar position. Default: 'start'. 'start': tabs at top (horizontal) or left (vertical). 'end': tabs at bottom (horizontal) or right (vertical).",
+              "type": "string",
+              "enum": [
+                "start",
+                "end"
+              ],
+              "default": "start"
+            },
+            "children": {
+              "description": "Child component ID list or template component ID and loop data path. Child component type must be TabContent.",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "$ref": "#/$defs/TemplateChildren"
+                }
+              ]
+            },
+            "vertical": {
+              "description": "Whether tabs are arranged vertically. Default: false (horizontal).",
+              "type": "boolean",
+              "default": false
+            },
+            "scrollable": {
+              "description": "Whether page switching can be done by swiping. Default: true.",
+              "type": "boolean"
+            },
+            "tabIndex": {
+              "description": "Index of the currently displayed tab. Default: 0.",
+              "type": "number",
+              "default": 0
+            },
+            "onChange": {
+              "type": "array",
+              "description": "Event handlers triggered when active tab changes. Event data: {index: number}.",
+              "items": {
+                "$ref": "#/$defs/EventHandler"
+              }
+            }
+          },
+          "required": [
+            "component"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "TabContent": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Content container used only in Tabs component, corresponding to the content container of one tab",
+          "properties": {
+            "component": {
+              "const": "TabContent"
+            },
+            "title": {
+              "description": "Title text displayed on the tab navigation bar.",
+              "type": "string"
+            },
+            "icon": {
+              "description": "Icon resource displayed on the tab navigation bar.",
+              "type": "string"
+            },
+            "selectedSrc": {
+              "description": "Icon resource displayed when the tab is selected.",
+              "type": "string"
+            },
+            "tabType": {
+              "description": "Tab style. 'capsule': capsule-shaped tab. 'underline': underline-shaped tab.",
+              "type": "string",
+              "enum": [
+                "capsule",
+                "underline"
+              ]
+            }
+          },
+          "required": [
+            "component"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "styles": {
+              "type": "object",
+              "properties": {
+                "selectedColor": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Title text color when this tab is selected, in hex format."
+                },
+                "unSelectedColor": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Title text color when this tab is not selected, in hex format."
+                },
+                "defaultBackgroundColor": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Tab background color when not selected, in hex format."
+                },
+                "selectedBackgroundColor": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Tab background color when selected, in hex format."
+                },
+                "defaultBorderColor": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Tab border color when not selected, in hex format."
+                },
+                "selectedBorderColor": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Tab border color when selected, in hex format."
+                },
+                "fontSize": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "default": 16
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Tab title font size in fp. Default: 16."
+                },
+                "fontWeight": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "default": 500
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Tab title font weight. Default: 500. Number [100-900] in steps of 100, or enum: 'lighter'(100), 'normal'(400), 'regular'(400), 'medium'(500), 'bold'(700), 'bolder'(900)."
+                },
+                "iconSize": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "default": 16
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Tab icon size in vp. Default: 16."
+                },
+                "space": {
+                  "oneOf": [
+                    {
+                      "type": "number",
+                      "default": 0
+                    },
+                    {
+                      "$ref": "#/$defs/ExtendedDynamicValueRef"
+                    }
+                  ],
+                  "description": "Spacing between tab title and icon in vp. Default: 0."
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "description": "Content container used only as a direct child of Tabs. Defines one tab's title, icon, and display style (capsule or underline)."
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "Web": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/ExtendedComponentCommon"
+        },
+        {
+          "type": "object",
+          "description": "Container component for rendering web content via URL.",
+          "properties": {
+            "component": {
+              "const": "Web"
+            },
+            "url": {
+              "description": "URL address of the web page to render.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "component",
+            "url"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "If": {
+      "type": "object",
+      "description": "Conditional component that renders different branches based on condition. Virtual node - does not support events.",
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "component": {
+              "const": "If"
+            },
+            "id": {
+              "type": "string",
+              "description": "Unique component identifier within the surface"
+            },
+            "condition": {
+              "description": "Condition expression. When true, renders childrenIf; when false, renders childrenElse. Must be an expression wrapped in {{...}}.",
+              "$ref": "#/$defs/Expression"
+            },
+            "childrenIf": {
+              "description": "Array of child component IDs to render when condition evaluates to true.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "childrenElse": {
+              "description": "Array of child component IDs to render when condition evaluates to false.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "component",
+            "id",
+            "condition"
+          ],
+          "description": "Conditional rendering component. Evaluates an expression and renders childrenIf when true, childrenElse when false. Virtual node — does not support events (onClick, onAppear)."
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  },
+  "extendedFunctions": {
+    "getRadioValue": {
+      "description": "Gets the value text of the selected Radio component in a group. Returns an empty string if the group is not found or no Radio is selected.",
+      "args": {
+        "$ref": "#/$defs/GetRadioValueArgs"
+      },
+      "returnType": {
+        "const": "string"
+      },
+      "interactionOnly": true,
+      "examples": [
+        {
+          "call": "getRadioValue",
+          "args": {
+            "group": "plan_type"
+          }
+        }
+      ]
+    },
+    "getCheckboxGroupValues": {
+      "description": "Gets value texts of all selected Checkbox components in a CheckboxGroup. Returns an empty array if the group is not found or none are selected.",
+      "args": {
+        "$ref": "#/$defs/GetCheckboxGroupValuesArgs"
+      },
+      "returnType": {
+        "const": "string[]"
+      },
+      "interactionOnly": true,
+      "examples": [
+        {
+          "call": "getCheckboxGroupValues",
+          "args": {
+            "group": "hobbies"
+          }
+        }
+      ]
+    },
+    "getToggleValue": {
+      "description": "Gets the on/off state and label text of a Toggle component.",
+      "args": {
+        "$ref": "#/$defs/GetToggleValueArgs"
+      },
+      "returnType": {
+        "type": "object",
+        "properties": {
+          "isOn": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "isOn",
+          "label"
+        ],
+        "additionalProperties": false
+      },
+      "interactionOnly": true,
+      "examples": [
+        {
+          "call": "getToggleValue",
+          "args": {
+            "componentId": "agree_toggle"
+          }
+        }
+      ]
+    },
+    "getSelectValue": {
+      "description": "Gets the text value of the currently selected Select option. Returns an empty string if the component is not found or no option is selected.",
+      "args": {
+        "$ref": "#/$defs/GetSelectValueArgs"
+      },
+      "returnType": {
+        "const": "string"
+      },
+      "interactionOnly": true,
+      "examples": [
+        {
+          "call": "getSelectValue",
+          "args": {
+            "componentId": "city_select"
+          }
+        }
+      ]
+    },
+    "break": {
+      "description": "Breaks out of the current EventHandler chain, stopping execution of subsequent EventHandlers.",
+      "args": {
+        "$ref": "#/$defs/BreakArgs"
+      },
+      "returnType": {
+        "const": "void"
+      },
+      "interactionOnly": true,
+      "examples": [
+        {
+          "call": "break"
+        }
+      ]
+    },
+    "setDataModel": {
+      "description": "Sets a value in the data model at the specified path.",
+      "args": {
+        "$ref": "#/$defs/SetDataModelArgs"
+      },
+      "returnType": {
+        "const": "void"
+      },
+      "interactionOnly": true,
+      "examples": [
+        {
+          "call": "setDataModel",
+          "args": {
+            "path": "/ui/isLoading",
+            "value": true
+          }
+        },
+        {
+          "call": "setDataModel",
+          "args": {
+            "path": "{{ '/users/' + $__dataModel.userId + '/name' }}",
+            "value": "{{ $__dataModel.inputName }}"
+          }
+        }
+      ]
+    },
+    "setAttributes": {
+      "description": "Modifies attribute values of a target component in batch.",
+      "args": {
+        "$ref": "#/$defs/SetAttributesArgs"
+      },
+      "returnType": {
+        "const": "void"
+      },
+      "interactionOnly": true,
+      "examples": [
+        {
+          "call": "setAttributes",
+          "args": {
+            "componentId": "submit_btn",
+            "value": {
+              "label": "{{ $__dataModel.isSubmitted ? 'Submitted' : 'Submit' }}"
+            }
+          }
+        }
+      ]
+    },
+    "navigate": {
+      "description": "Performs navigation to a NavContainer sub-page.",
+      "args": {
+        "$ref": "#/$defs/NavigateArgs"
+      },
+      "returnType": {
+        "const": "void"
+      },
+      "interactionOnly": true,
+      "examples": [
+        {
+          "call": "navigate",
+          "args": {
+            "componentId": "main_nav_container",
+            "targetComponentId": "settings_page"
+          }
+        }
+      ]
+    }
+  },
+  "variableSystem": {
+    "global": {
+      "$ref": "#/$defs/VariableScope"
+    },
+    "local": {
+      "$ref": "#/$defs/LocalVariableScope"
+    }
+  },
+  "expressionOperators": {
+    "$ref": "#/$defs/ExpressionOperator"
+  },
+  "dataTypes": {
+    "$ref": "#/$defs/DataType"
+  },
+  "expressionBuiltinFunctions": {
+    "$ref": "#/$defs/ExpressionBuiltinFunction"
+  },
+  "expressionTypeCoercion": {
+    "$ref": "#/$defs/ExpressionTypeCoercion"
+  },
+  "pathSyntax": {
+    "$ref": "#/$defs/PathSyntax"
+  },
+  "expressionReactivity": {
+    "$ref": "#/$defs/ExpressionReactivity"
+  },
+  "expressionUsageConstraints": {
+    "description": "Constraints and limitations for expression usage in extended components",
+    "type": "object",
+    "properties": {
+      "supportedComponents": {
+        "description": "Only extended components (marked with *) support expressions",
+        "type": "string"
+      },
+      "supportedMessages": {
+        "description": "Expressions only work in updateComponents messages",
+        "type": "string"
+      },
+      "restrictedProperties": {
+        "description": "Cannot use expressions in 'component' or 'id' properties",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "pathRestriction": {
+        "description": "A2UI native data binding 'path' attribute does not support expressions (literal JSON Pointer only). However, function argument 'path' (e.g. setDataModel args.path) does support expressions.",
+        "type": "string"
+      },
+      "handlerRestriction": {
+        "description": "EventHandler 'call' and 'as' properties cannot use expressions",
+        "type": "string"
+      },
+      "valueOnly": {
+        "description": "Expressions can only be used in values, not in keys/property names",
+        "type": "string"
+      },
+      "sizeLimit": {
+        "description": "Expression string total length must not exceed 2048 characters",
+        "type": "number"
+      },
+      "nestingLimit": {
+        "description": "Parenthesis nesting depth must not exceed 20 levels",
+        "type": "number"
+      },
+      "schemaAuthority": {
+        "description": "Whether each property supports expressions is ultimately determined by the catalog JSON Schema definition (Expression union type). If a property's schema includes Expression as an option, it supports expressions; otherwise it does not.",
+        "type": "string"
+      }
     }
   }
 }

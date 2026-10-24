@@ -1,0 +1,9 @@
+{
+  "name": "xy-a2ui-renderer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/stream.test.mjs",
+    "test:browser": "node --test tests/browser.test.mjs"
+  }
+}
