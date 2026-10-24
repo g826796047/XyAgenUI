@@ -1,32 +1,6 @@
 {
   "a2ui": {
-    "capabilities": [
-      "form-reactivity-v1"
-    ],
-    "catalogId": "ohos.a2ui.extended.catalog"
-  },
-  "allowedUiEvents": [
-    {
-      "name": "submit_form_query",
-      "description": "读取本 surface 内指定表单的当前输入和同步计算结果，校验通过后作为同一对话的新用户 query 发送。",
-      "contextSchema": {
-        "type": "object",
-        "properties": {
-          "formId": {
-            "type": "string",
-            "minLength": 1
-          },
-          "prompt": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "required": [
-          "formId",
-          "prompt"
-        ],
-        "additionalProperties": false
-      }
-    }
-  ]
+    "catalogId": "ohos.a2ui.extended.catalog",
+    "allowedFunctions": ["sendMsgToXiaoyi", "getSelectValue", "getToggleValue"]
+  }
 }

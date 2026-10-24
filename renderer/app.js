@@ -64,7 +64,7 @@ export function setPathValue(model, path, value, remove = false) {
 
 function tokenizeExpression(expression) {
   expression = expression.trim();
-  const pattern = /\s*(\$__dataModel(?:\.[A-Za-z_$][\w$]*)*|(?:\d+\.\d+|\d+)|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|true|false|null|===|!==|==|!=|<=|>=|&&|\|\||[()+\-*/%<>!?])/gy;
+  const pattern = /\s*(\$__dataModel(?:\.[A-Za-z_$][\w$]*)*|(?:\d+\.\d+|\d+)|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|true|false|null|===|!==|==|!=|<=|>=|&&|\|\||[()+\-*/%<>?!:])/gy;
   const tokens = []; let offset = 0;
   while (offset < expression.length) {
     pattern.lastIndex = offset;
@@ -88,7 +88,7 @@ export function evaluateExpression(source, model) {
     if (take("-")) return -primary();
     if (take("(")) {
       depth += 1; if (depth > 20) throw new Error("表达式嵌套过深");
-      const value = logicalOr(); if (!take(")")) throw new Error("表达式括号不匹配"); depth -= 1; return value;
+      const value = conditional(); if (!take(")")) throw new Error("表达式括号不匹配"); depth -= 1; return value;
     }
     const token = tokens[cursor++];
     if (token === undefined) throw new Error("表达式值缺失");
@@ -106,12 +106,19 @@ export function evaluateExpression(source, model) {
   };
   const chain = (next, operators, apply) => { let value = next(); while (operators.includes(tokens[cursor])) { const operator = tokens[cursor++], right = next(); value = apply(operator, value, right); } return value; };
   const multiplicative = () => chain(primary, ["*", "/", "%"], (op, left, right) => { if (op === "/" && right === 0) throw new Error("表达式不能除以零"); const value = op === "*" ? left * right : op === "/" ? left / right : left % right; if (typeof value === "number" && !Number.isFinite(value)) throw new Error("表达式结果不是有限数值"); return value; });
-  const additive = () => chain(multiplicative, ["+", "-"], (op, left, right) => op === "+" ? left + right : left - right);
+  const jsString = value => value === null ? "null" : value === undefined ? "undefined" : value === true ? "true" : value === false ? "false" : String(value);
+  const additive = () => chain(multiplicative, ["+", "-"], (op, left, right) => op === "+" && (typeof left === "string" || typeof right === "string") ? jsString(left) + jsString(right) : op === "+" ? left + right : left - right);
   const relational = () => chain(additive, ["<", ">", "<=", ">="], (op, left, right) => op === "<" ? left < right : op === ">" ? left > right : op === "<=" ? left <= right : left >= right);
   const equality = () => chain(relational, ["==", "===", "!=", "!=="], (op, left, right) => op === "==" || op === "===" ? left === right : left !== right);
-  const logicalAnd = () => chain(equality, ["&&"], (_op, left, right) => Boolean(left) && Boolean(right));
-  const logicalOr = () => chain(logicalAnd, ["||"], (_op, left, right) => Boolean(left) || Boolean(right));
-  const result = logicalOr();
+  const logicalAnd = () => chain(equality, ["&&"], (_op, left, right) => left ? right : left);
+  const logicalOr = () => chain(logicalAnd, ["||"], (_op, left, right) => left ? left : right);
+  const conditional = () => {
+    const condition = logicalOr();
+    if (!take("?")) return condition;
+    const whenTrue = conditional(); if (!take(":")) throw new Error("条件表达式缺少冒号");
+    const whenFalse = conditional(); return condition ? whenTrue : whenFalse;
+  };
+  const result = conditional();
   if (cursor !== tokens.length) throw new Error("表达式尾部无效");
   return result;
 }
@@ -269,7 +276,7 @@ export class Playground {
       try { el.max = Number(resolve(node.total ?? 1, this.model)); el.value = Number(resolve(node.value ?? 0, this.model)); } catch { el.max = 1; el.value = 0; }
     } else if (type === "Button") {
       el = html("button", "a2ui-button", resolve(node.label, this.model) ?? ""); el.type = "button";
-      el.disabled = this.interactionLocked() || !node.action?.event || !this.controlEnabled(node) || this.submitted.has(id);
+      el.disabled = this.interactionLocked() || !node.action?.functionCall || !this.controlEnabled(node) || this.submitted.has(id);
       el.onclick = () => this.submit(node);
     } else if (type === "TextInput") {
       el = document.createElement("input"); el.className = "a2ui-input"; const inputType = resolve(node.type, this.model);
@@ -345,21 +352,21 @@ export class Playground {
     return [...this.nodes.values()].some(inspect);
   }
   async submit(node) {
-    const id = node.id, event = node.action?.event; if (!event || !this.complete || this.submitting.size > 0 || this.submitted.has(id)) return;
+    const id = node.id, functionCall = node.action?.functionCall; if (!functionCall || !this.complete || this.submitting.size > 0 || this.submitted.has(id)) return;
     this.submitting.add(id); this.render();
     try {
       const result = await request("/api/submit", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({messages: this.messages, context: this.context, buttonId: id, dataModel: this.model, selections: this.selections, inputs: this.inputs})});
       const detail = {...result, dataModel: structuredClone(this.model), selections: structuredClone(this.selections)};
-      if (window.xyA2uiHost?.onEvent) await window.xyA2uiHost.onEvent(detail);
-      this.submitted.add(id); this.results.push(detail); this.showResult(detail); window.dispatchEvent(new CustomEvent("a2ui:event", {detail}));
-    } catch (error) { const detail = {error: error.message, event, surfaceId: this.surfaceId}; this.results.push(detail); this.showResult(detail); }
+      if (window.xyA2uiHost?.onFunctionCall) await window.xyA2uiHost.onFunctionCall(detail);
+      this.submitted.add(id); this.results.push(detail); this.showResult(detail); window.dispatchEvent(new CustomEvent("a2ui:functioncall", {detail}));
+    } catch (error) { const detail = {error: error.message, functionCall, surfaceId: this.surfaceId}; this.results.push(detail); this.showResult(detail); }
     finally { this.submitting.delete(id); this.render(); }
   }
   showResult(detail) {
     const panel = $("result-panel"); if (!panel) return;
     if (this.results.length === 1) panel.replaceChildren();
-    const entry = html("article", "query-entry"), header = html("header"); header.append(html("span", "", detail.error ? "提交失败" : detail.event?.name || "交互结果"), html("span", "", detail.surfaceId || ""));
-    entry.append(header, html("pre", "", detail.error || detail.query || JSON.stringify(detail.event, null, 2))); panel.append(entry);
+    const entry = html("article", "query-entry"), header = html("header"); header.append(html("span", "", detail.error ? "函数调用失败" : detail.functionCall?.call || "交互结果"), html("span", "", detail.surfaceId || ""));
+    entry.append(header, html("pre", "", detail.error || detail.query || JSON.stringify(detail.functionCall, null, 2))); panel.append(entry);
     if ($("result-count")) $("result-count").textContent = String(this.results.length);
     if ($("copy-result")) { $("copy-result").disabled = !detail.query; $("copy-result").onclick = () => navigator.clipboard.writeText(detail.query); }
   }

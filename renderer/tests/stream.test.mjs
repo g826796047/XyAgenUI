@@ -22,6 +22,8 @@ test('没有完整行时不提前输出，空行和不完整 JSON 报告行号',
 test('安全表达式只读取数据模型，不执行脚本', () => {
   assert.equal(evaluateExpression('{{ $__dataModel.form.people * $__dataModel.form.perPerson }}', {form:{people:6,perPerson:200}}), 1200);
   assert.equal(evaluateExpression('{{ $__dataModel.form.people >= 4 && !$__dataModel.form.done }}', {form:{people:6,done:false}}), true);
+  assert.equal(evaluateExpression("{{ $__dataModel.form.people * $__dataModel.form.perPerson + '' }}", {form:{people:6,perPerson:200}}), '1200');
+  assert.equal(evaluateExpression("{{ $__dataModel.form.done ? '是' : '否' }}", {form:{done:true}}), '是');
   assert.equal(evaluateExpression('{{ 4 + 2 * 3 }}', {}), 10);
   assert.throws(() => evaluateExpression('{{ 1 / 0 }}', {}), /除以零/);
   assert.throws(() => evaluateExpression('{{ eval(1) }}', {}), /安全子集/);

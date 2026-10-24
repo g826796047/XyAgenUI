@@ -10,4 +10,4 @@
 
 快照目录中 `consumer-rules.txt` 在该提交为空文件；Extended catalog 自身的表达式限制、动态值和函数合同以 `extended_catalog.json` 为准。
 
-组件字段以 `extended_catalog.json` 为准。仓库的 `catalogs/xy-a2ui-chat-basic/v1/catalog.json` 是该快照的副本，方便工具加载；旧 `Extended.*` 对话合同只在 `references/a2ui/legacy/` 保存历史说明，默认 Skill、validator 和样例不再使用。
+组件字段、动态值和函数合同以 `extended_catalog.json` 为准；Skill、validator 和样例只使用当前 Extended catalog。

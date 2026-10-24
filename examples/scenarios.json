@@ -1,5 +1,36 @@
 [
   {
+    "id": "component-gallery",
+    "query": "展示当前项目支持的 A2UIRender Extended 组件。",
+    "requiredFacts": [
+      "组件目录"
+    ],
+    "requiredComponents": [
+      "Text",
+      "Image",
+      "Divider",
+      "Progress",
+      "Button",
+      "TextInput",
+      "Toggle",
+      "Radio",
+      "Checkbox",
+      "CheckboxGroup",
+      "Select",
+      "Row",
+      "Column",
+      "List",
+      "Stack",
+      "Grid",
+      "NavContainer",
+      "Tabs",
+      "TabContent",
+      "Web",
+      "If"
+    ],
+    "runtimeContext": "component-gallery-runtime-context.json"
+  },
+  {
     "id": "short-answer",
     "query": "6 乘以 7 等于多少？",
     "requiredFacts": [
@@ -7,8 +38,7 @@
     ],
     "requiredComponents": [
       "Text"
-    ],
-    "events": []
+    ]
   },
   {
     "id": "long-answer",
@@ -20,8 +50,7 @@
       "Column",
       "Divider",
       "Text"
-    ],
-    "events": []
+    ]
   },
   {
     "id": "structured-summary",
@@ -34,8 +63,7 @@
       "Row",
       "Divider",
       "Text"
-    ],
-    "events": []
+    ]
   },
   {
     "id": "comparison",
@@ -47,8 +75,7 @@
       "Column",
       "Grid",
       "Text"
-    ],
-    "events": []
+    ]
   },
   {
     "id": "image-answer",
@@ -60,33 +87,29 @@
       "Column",
       "Image",
       "Text"
-    ],
-    "events": []
+    ]
   },
   {
-    "id": "allowed-event",
-    "query": "告诉我条目 42 是否就绪，并提供打开入口。",
+    "id": "function-call-link",
+    "query": "展示 A2UI 官方文档入口。",
     "requiredFacts": [
-      "条目"
+      "A2UI 官方文档"
     ],
     "requiredComponents": [
       "Button",
       "Text"
     ],
-    "events": [
-      "open_item"
-    ]
+    "runtimeContext": "link-runtime-context.json"
   },
   {
-    "id": "no-event",
+    "id": "no-function",
     "query": "告诉我条目 42 是否就绪。",
     "requiredFacts": [
       "没有可用操作"
     ],
     "requiredComponents": [
       "Text"
-    ],
-    "events": []
+    ]
   },
   {
     "id": "selection-single",
@@ -99,9 +122,6 @@
       "Radio",
       "Button",
       "Text"
-    ],
-    "events": [
-      "submit_selection_query"
     ],
     "runtimeContext": "selection-runtime-context.json"
   },
@@ -117,9 +137,6 @@
       "CheckboxGroup",
       "Button",
       "Text"
-    ],
-    "events": [
-      "submit_selection_query"
     ],
     "runtimeContext": "selection-runtime-context.json"
   },
@@ -137,9 +154,6 @@
       "Button",
       "Text"
     ],
-    "events": [
-      "submit_selection_query"
-    ],
     "runtimeContext": "selection-runtime-context.json"
   },
   {
@@ -155,9 +169,6 @@
       "CheckboxGroup",
       "Button",
       "Text"
-    ],
-    "events": [
-      "submit_selection_query"
     ],
     "runtimeContext": "selection-runtime-context.json"
   },
@@ -175,9 +186,6 @@
       "Toggle",
       "Button"
     ],
-    "events": [
-      "submit_form_query"
-    ],
     "runtimeContext": "form-runtime-context.json"
   },
   {
@@ -189,7 +197,22 @@
     "requiredComponents": [
       "Column",
       "Text"
+    ]
+  },
+  {
+    "id": "query-template-food",
+    "query": "想吃披萨或沙拉，4 人一起吃，提供交互选择并在确认时按句式组成下一轮问题。",
+    "requiredFacts": [
+      "我想吃",
+      "参与人数"
     ],
-    "events": []
+    "requiredComponents": [
+      "Column",
+      "Checkbox",
+      "CheckboxGroup",
+      "TextInput",
+      "Button"
+    ],
+    "runtimeContext": "query-template-runtime-context.json"
   }
 ]

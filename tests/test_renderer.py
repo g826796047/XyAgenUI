@@ -22,6 +22,8 @@ class RendererTests(unittest.TestCase):
         self.assertEqual(evaluate_expression("{{ 4 + 2 * 3 }}", model), 10)
         with self.assertRaisesRegex(ValueError, "除以零"):
             evaluate_expression("{{ 1 / 0 }}", model)
+        with self.assertRaisesRegex(ValueError, "不兼容"):
+            evaluate_expression("{{ '' > 0 }}", model)
 
     def test_examples_validate(self):
         for scenario in SCENARIOS:
@@ -30,10 +32,10 @@ class RendererTests(unittest.TestCase):
                 self.assertTrue(result["valid"])
                 self.assertIn("root", result["nodes"])
 
-    def test_action_submission_keeps_literal_event(self):
-        request = payload("allowed-event")
+    def test_action_submission_returns_function_call_without_navigation(self):
+        request = payload("function-call-link")
         result = process_request("/api/submit", {**request, "buttonId": "open"})
-        self.assertEqual(result["event"]["name"], "open_item")
+        self.assertEqual(result["functionCall"]["call"], "openSuperlink")
         self.assertIsNone(result["query"])
 
     def test_invalid_button_is_rejected(self):
@@ -46,10 +48,10 @@ class RendererTests(unittest.TestCase):
             **request,
             "buttonId": "confirm",
             "dataModel": {"order": {"bigMac": True, "mcChicken": False, "fries": True, "pie": False, "drinkIndex": 0}},
-            "selections": {"radio": {}, "checkbox": {"meal-items": ["big-mac-meal", "fries"]}, "select": {"drink": 0}, "toggle": {}},
+            "selections": {"radio": {}, "checkbox": {"meal-items": ["巨无霸套餐", "薯条"]}, "select": {"drink": 0}, "toggle": {}},
             "inputs": {},
         })
-        self.assertIn("巨无霸套餐, 薯条", result["query"])
+        self.assertIn("巨无霸套餐和薯条", result["query"])
         self.assertIn("可乐", result["query"])
         self.assertIn("请根据我选中的麦当劳餐品", result["query"])
 
@@ -73,12 +75,12 @@ class RendererTests(unittest.TestCase):
             "selections": {"radio": {}, "checkbox": {}, "select": {"taste": 0}, "toggle": {}},
             "inputs": {},
         })
-        self.assertIn("用餐人数：6", result["query"])
-        self.assertIn("每人食材用量：200", result["query"])
-        self.assertIn("食材总量（g）：1200", result["query"])
-        self.assertIn("口味偏好：清淡", result["query"])
-        self.assertIn("补充备注：素食要求", result["query"])
-        self.assertIn("需要一次性餐具：是", result["query"])
+        self.assertIn("聚会人数6", result["query"])
+        self.assertIn("每人用量200", result["query"])
+        self.assertIn("食材总量1200", result["query"])
+        self.assertIn("口味清淡", result["query"])
+        self.assertIn("备注素食要求", result["query"])
+        self.assertIn("一次性餐具是", result["query"])
 
     def test_form_submit_rejects_invalid_number_before_query_creation(self):
         request = payload("form-ingredients")
@@ -88,6 +90,43 @@ class RendererTests(unittest.TestCase):
                 "buttonId": "confirm",
                 "dataModel": {"form": {"people": 0, "perPerson": 200, "tasteIndex": 0}},
                 "selections": {"radio": {}, "checkbox": {}, "select": {"taste": 0}, "toggle": {}},
+                "inputs": {},
+            })
+
+    def test_query_template_uses_live_values_and_component_display_order(self):
+        request = payload("query-template-food")
+        result = process_request("/api/submit", {
+            **request,
+            "buttonId": "confirm",
+            "dataModel": {"meal": {"people": 4, "pizza": True, "salad": True}},
+            "selections": {"radio": {}, "checkbox": {"foods": ["沙拉", "披萨"]}, "select": {}, "toggle": {}},
+            "inputs": {},
+        })
+        self.assertEqual(result["query"], "我想吃披萨和沙拉，需要4人一起合作")
+
+    def test_query_template_rejects_empty_values(self):
+        request = payload("query-template-food")
+        confirm = next(node for node in request["messages"][-1]["updateComponents"]["components"] if node["id"] == "confirm")
+        confirm["enabled"] = True
+        with self.assertRaisesRegex(ValueError, "函数参数"):
+            process_request("/api/submit", {
+                **request,
+                "buttonId": "confirm",
+                "dataModel": {"meal": {"people": "", "pizza": True, "salad": False}},
+                "selections": {"radio": {}, "checkbox": {"foods": ["披萨"]}, "select": {}, "toggle": {}},
+                "inputs": {},
+            })
+
+    def test_query_template_rejects_unconverted_numeric_values(self):
+        request = payload("query-template-food")
+        confirm = next(node for node in request["messages"][-1]["updateComponents"]["components"] if node["id"] == "confirm")
+        confirm["action"]["functionCall"]["args"]["number"] = "{{ $__dataModel.meal.people }}"
+        with self.assertRaisesRegex(ValueError, "必须先转换为字符串"):
+            process_request("/api/submit", {
+                **request,
+                "buttonId": "confirm",
+                "dataModel": {"meal": {"people": 4, "pizza": True, "salad": False}},
+                "selections": {"radio": {}, "checkbox": {"foods": ["披萨"]}, "select": {}, "toggle": {}},
                 "inputs": {},
             })
 

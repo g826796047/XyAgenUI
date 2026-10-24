@@ -23,7 +23,7 @@
         <div class="sample-bar"><label for="sample">从样例开始</label><select id="sample"><option value="">选择一个场景…</option></select><button id="load-sample" class="icon-button" title="载入所选样例" aria-label="载入所选样例">↗</button></div>
         <div class="editor-wrap"><div class="line-gutter" id="line-gutter" aria-hidden="true">1</div><textarea id="source" aria-label="A2UI JSONL 内容" spellcheck="false" placeholder='在这里粘贴 A2UI JSONL&#10;每行一个完整的 JSON 消息。'></textarea></div>
         <div class="editor-footer"><span><i class="dot"></i>JSONL</span><span id="source-stats">0 行 · 0 KB</span></div>
-        <details class="context-details"><summary>运行时上下文 <span>能力声明与事件白名单</span></summary><textarea id="context" aria-label="运行时上下文 JSON" spellcheck="false"></textarea><button id="default-context" class="quiet-button">恢复工作台默认上下文</button></details>
+        <details class="context-details"><summary>运行时上下文 <span>能力与函数白名单</span></summary><textarea id="context" aria-label="运行时上下文 JSON" spellcheck="false"></textarea><button id="default-context" class="quiet-button">恢复工作台默认上下文</button></details>
         <div class="playback-controls"><div class="playback-buttons"><button id="play" class="primary-button"><span>▶</span> 流式渲染</button><button id="step" class="secondary-button" title="解析并渲染下一条消息">单步</button><button id="instant" class="quiet-button">即时渲染</button><button id="reset" class="icon-button" title="重置预览" aria-label="重置预览">↺</button></div><label class="speed-label" for="speed">间隔<select id="speed"><option value="80">80 ms</option><option value="220" selected>220 ms</option><option value="600">600 ms</option><option value="1200">1.2 s</option></select></label></div>
       </section>
       <section class="panel preview-panel" aria-labelledby="preview-heading">
@@ -33,7 +33,7 @@
       </section>
     </div>
     <div id="error-panel" class="error-panel" role="alert" hidden><strong>需要检查内容</strong><pre id="error-text"></pre></div>
-    <footer class="page-footer"><span><i class="dot"></i>xy-a2ui-chat-basic · 1.2.0</span><span>粘贴 → 流式解析 → 组件更新 → 交互确认</span></footer>
+    <footer class="page-footer"><span><i class="dot"></i>XyAgenUI · A2UIRender Extended</span><span>粘贴 → 流式解析 → 组件更新 → FunctionCall 交互</span></footer>
   </main>
   <div id="toast" role="status" hidden></div>
 </body>

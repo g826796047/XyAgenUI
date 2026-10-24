@@ -849,18 +849,17 @@ wire profile 固定 A2UI `v0.9` 和 `catalogId: ohos.a2ui.extended.catalog`。sk
 | --- | --- | --- |
 | 消息流 | `createSurface`、多组件 `updateComponents`、局部 `updateDataModel`、`deleteSurface` | 可逐条流式更新；validator 检查消息 envelope 与组件图 |
 | 数据联动 | 使用 catalog 声明的 `{ "path": "..." }` 绑定和受限表达式 | 不执行任意 JavaScript；表达式能力须以目标 renderer 实际支持为准 |
-| 交互 | `action.event` 必须匹配宿主提供的 `allowedUiEvents` | 选择及表单内容由宿主依据实际状态组装下一轮 query |
-| 扩展函数 | 本地 renderer 不执行 catalog 扩展函数 | 不能将扩展函数列入可用能力，除非目标宿主明确声明并实现 |
+| 交互 | `action.functionCall` 必须使用宿主通过 `a2ui.allowedFunctions` 声明的函数 | 选择及表单内容由 renderer 依据实际状态组装下一轮 query |
+| 扩展函数 | 仅执行官方 catalog 或端侧合同中已注册的函数 | 未声明函数不能生成或执行；浏览器 renderer 只提供安全预览 |
 | 资源 | 图片和 Web 资源受宿主来源策略控制 | JSONL 通过校验不代表资源可信、可访问或安全 |
-| 旧合同 | `.form` catalog 与 `Extended.*` 迁入 `references/a2ui/legacy/` | 仅供迁移查阅，不能作为生成或验证依据 |
 
 来源：[X1][X2][X3][X4]。
 
 ### 12.4 交互合同
 
-**选择确认**：宿主同时声明 `selection-query-v1` capability 和匹配的 `submit_selection_query` 事件后，Skill 才生成可提交选择。选项在本地编辑；流式回答结束且校验通过后才启用确认；query 根据实际选择状态构造，发送期间避免重复提交。[X2]
+**选择确认**：宿主通过 `a2ui.allowedFunctions` 声明 `sendMsgToXiaoyi` 及所需的官方读取函数后，Skill 才生成可提交选择。选项在本地编辑；流式回答结束且校验通过后才启用确认；按钮的 `action.functionCall` 根据实际选择状态构造 query，发送期间避免重复提交。[X2]
 
-**表单联动**：宿主声明 `form-reactivity-v1` 和对应提交事件后才生成表单。输入通过数据路径写入模型，展示字段通过绑定或安全表达式读取；确认时以当前表单快照生成新 query。用户输入和选择编辑本身不调用模型，也不触发订单等业务执行。[X3]
+**表单联动**：宿主声明需要的本地函数后才生成表单。输入通过数据路径写入模型，展示字段通过绑定或安全表达式读取；确认时以当前表单快照生成新 query。用户输入和选择编辑本身不调用模型，也不触发订单等业务执行。[X3]
 
 浏览器 renderer 提供流式预览、局部更新、常用组件及表单 query 预览；其表达式子集和事件预览是参考行为，不能作为完整 A2UIRender 实现证明。[X4]
 
@@ -993,7 +992,7 @@ flowchart TB
 6. **资源预算。** 节点、规则、列表长度、依赖边、递归深度与执行时间有上限；对拒绝原因返回可诊断错误。
 7. **数值语义统一。** 金额按整数最小货币单位或规定的十进制计算；比例与单位转换有明确舍入。
 
-如果确有跨表单计算或复杂列表筛选需求，再设计下一版 capability；不要悄悄放宽 `form-reactivity-v1` 的已发布语义。
+如果确有跨表单计算或复杂列表筛选需求，再扩展已注册函数合同；不要悄悄放宽表达式和函数白名单。
 
 ### 13.6 事件路由与业务边界
 

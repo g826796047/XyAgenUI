@@ -1,0 +1,7 @@
+{
+  "a2ui": {
+    "catalogId": "ohos.a2ui.extended.catalog",
+    "allowedFunctions": [],
+    "allowedResourceDomains": ["gitcode.com"]
+  }
+}

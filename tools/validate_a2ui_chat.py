@@ -18,9 +18,9 @@ PROTOCOL_VERSION = "v0.9"
 COMPONENTS = {"Text", "Image", "Divider", "Progress", "Button", "TextInput", "Toggle", "Radio", "Checkbox", "CheckboxGroup", "Select", "Row", "Column", "List", "Stack", "Grid", "NavContainer", "Tabs", "TabContent", "Web", "If"}
 LAYOUTS = {"Row", "Column", "Stack", "Grid", "List", "Tabs", "TabContent", "NavContainer", "If"}
 CONTAINERS = {"Row", "Column", "Stack", "Grid", "List", "Tabs", "NavContainer"}
-DEPRECATED = {"Extended.Card", "Extended.ChoiceGroup", "Extended.Form", "Extended.NumberInput", "Extended.Output"}
 EXPR_RE = re.compile(r"^\{\{([^{}]+)\}\}$")
-SAFE_FUNCTIONS = {"getRadioValue", "getCheckboxGroupValues", "getToggleValue", "getSelectValue", "setDataModel", "setAttributes", "navigate", "break"}
+CUSTOM_FUNCTIONS = {"sendMsgToXiaoyi", "openSuperlink", "openApplink", "openDeeplink"}
+CATALOG_FUNCTIONS = {"getRadioValue", "getCheckboxGroupValues", "getToggleValue", "getSelectValue", "setDataModel", "setAttributes", "navigate", "break"}
 
 
 def _obj(value: Any) -> bool:
@@ -57,7 +57,7 @@ def _expression_errors(source: str, path: str) -> list[str]:
             return [f"{path} 表达式必须独占整个属性值并使用完整的 {{...}} 语法"]
         return []
     expression = match.group(1).strip()
-    token_pattern = re.compile(r"\s*(\$__dataModel(?:\.[A-Za-z_$][\w$]*)*|(?:\d+\.\d+|\d+)|'(?:[^'\\]|\\.)*'|true|false|null|===|!==|==|!=|<=|>=|&&|\|\||[()+\-*/%<>!?])")
+    token_pattern = re.compile(r"\s*(\$__dataModel(?:\.[A-Za-z_$][\w$]*)*|(?:\d+\.\d+|\d+)|'(?:[^'\\]|\\.)*'|\"(?:[^\"\\]|\\.)*\"|true|false|null|===|!==|==|!=|<=|>=|&&|\|\||[()+\-*/%<>?!:])")
     tokens: list[str] = []
     position = 0
     while position < len(expression):
@@ -82,7 +82,7 @@ def _expression_errors(source: str, path: str) -> list[str]:
         if token == "(":
             cursor += 1
             depth += 1
-            if depth > 20 or not logical_or() or cursor >= len(tokens) or tokens[cursor] != ")":
+            if depth > 20 or not conditional() or cursor >= len(tokens) or tokens[cursor] != ")":
                 return False
             cursor += 1
             depth -= 1
@@ -109,29 +109,133 @@ def _expression_errors(source: str, path: str) -> list[str]:
     def logical_and() -> bool: return binary(equality, {"&&"})
     def logical_or() -> bool: return binary(logical_and, {"||"})
 
-    if not logical_or() or cursor != len(tokens):
+    def conditional() -> bool:
+        nonlocal cursor
+        if not logical_or():
+            return False
+        if cursor < len(tokens) and tokens[cursor] == "?":
+            cursor += 1
+            if not conditional() or cursor >= len(tokens) or tokens[cursor] != ":":
+                return False
+            cursor += 1
+            if not conditional():
+                return False
+        return True
+
+    if not conditional() or cursor != len(tokens):
         return [f"{path} 表达式不符合官方安全语法子集"]
     return []
 
 
-def _dynamic_tree(value: Any, path: str, functions: set[str]) -> list[str]:
+def _known_functions(catalog: dict[str, Any]) -> set[str]:
+    definitions = catalog.get("extendedFunctions", {})
+    return set(definitions) if isinstance(definitions, dict) else set()
+
+
+def _call_spec_errors(call_spec: Any, path: str, functions: set[str], catalog: dict[str, Any], allow_send: bool = False) -> list[str]:
+    if not isinstance(call_spec, dict) or not set(call_spec) <= {"call", "args"}:
+        return [f"{path} 函数调用必须只包含 call 和 args"]
+    call = call_spec.get("call")
+    known = _known_functions(catalog) | CUSTOM_FUNCTIONS
+    errors: list[str] = []
+    if not isinstance(call, str) or not call.strip():
+        errors.append(f"{path}.call 必须是非空函数名")
+    elif call not in known:
+        errors.append(f"{path}.call 函数 {call!r} 不在项目或官方函数合同中")
+    elif call not in functions:
+        errors.append(f"{path}.call 函数 {call!r} 未被运行时 a2ui.allowedFunctions 授权")
+    if call == "sendMsgToXiaoyi" and not allow_send:
+        errors.append(f"{path} sendMsgToXiaoyi 只能由 Button.action.functionCall 触发")
+    args = call_spec.get("args", {})
+    if not isinstance(args, dict):
+        errors.append(f"{path}.args 必须是对象")
+    else:
+        if call in {"openSuperlink", "openApplink"}:
+            if set(args) != {"url"}:
+                errors.append(f"{path}.args 必须只包含 url")
+            elif not _string_or_dynamic(args["url"]):
+                errors.append(f"{path}.args.url 必须是字符串或动态字符串值")
+        elif call == "openDeeplink":
+            if set(args) != {"bundleName", "url"}:
+                errors.append(f"{path}.args 必须包含 bundleName 和 url")
+            else:
+                for key in ("bundleName", "url"):
+                    if not _string_or_dynamic(args[key]):
+                        errors.append(f"{path}.args.{key} 必须是字符串或动态字符串值")
+        elif call == "sendMsgToXiaoyi":
+            query = args.get("query")
+            if not isinstance(query, str) or not query.strip():
+                errors.append(f"{path}.args.query 必须是非空字符串")
+            else:
+                names = re.findall(r"\$\{([A-Za-z][A-Za-z0-9_]*)\}", query)
+                residue = re.sub(r"\$\{[A-Za-z][A-Za-z0-9_]*\}", "", query)
+                if "${" in residue or "}" in residue:
+                    errors.append(f"{path}.args.query 只允许简单的 ${{name}} 占位符")
+                if set(names) != set(args) - {"query"}:
+                    errors.append(f"{path}.args.query 占位符必须与参数键完全对应")
+            for key, value in args.items():
+                if key != "query" and not _query_value_shape(value):
+                    errors.append(f"{path}.args.{key} 必须是非空字符串、字符串数组或动态字符串值")
+                elif key != "query" and _query_function_result_type(value, catalog) is False:
+                    errors.append(f"{path}.args.{key} 的函数结果不是字符串或字符串数组")
+        elif call in _known_functions(catalog):
+            definition = catalog.get("extendedFunctions", {}).get(call, {})
+            schema = definition.get("args") if isinstance(definition, dict) else None
+            if schema is not None:
+                errors.extend(_schema_errors(args, schema, catalog, f"{path}.args")[0])
+        errors.extend(_dynamic_tree(args, f"{path}.args", functions, catalog))
+    return errors
+
+
+def _string_or_dynamic(value: Any) -> bool:
+    return isinstance(value, str) or isinstance(value, dict) and (set(value) == {"path"} or "call" in value and set(value) <= {"call", "args"})
+
+
+def _query_value_shape(value: Any) -> bool:
+    if isinstance(value, str):
+        return bool(value.strip())
+    if isinstance(value, dict) and (set(value) == {"path"} or "call" in value and set(value) <= {"call", "args"}):
+        return True
+    return isinstance(value, list) and bool(value) and all(
+        isinstance(item, str) and bool(item.strip())
+        or isinstance(item, dict) and (set(item) == {"path"} or "call" in item and set(item) <= {"call", "args"})
+        for item in value
+    )
+
+
+def _query_function_result_type(value: Any, catalog: dict[str, Any]) -> bool | None:
+    """Return whether a dynamic catalog call produces a query-compatible value."""
+    if not isinstance(value, dict) or "call" not in value:
+        return None
+    definition = catalog.get("extendedFunctions", {}).get(value.get("call"), {})
+    result = definition.get("returnType", {}) if isinstance(definition, dict) else {}
+    if not isinstance(result, dict):
+        return False
+    return result.get("const") in {"string", "string[]"} or result.get("type") == "string"
+
+
+def _function_call_errors(value: Any, path: str, functions: set[str], catalog: dict[str, Any], allow_send: bool = False) -> list[str]:
+    if not isinstance(value, dict) or set(value) != {"functionCall"}:
+        return [f"{path} functionCall 必须是包含 call 和可选 args 的对象"]
+    return _call_spec_errors(value["functionCall"], f"{path}.functionCall", functions, catalog, allow_send)
+
+
+def _dynamic_tree(value: Any, path: str, functions: set[str], catalog: dict[str, Any], *, skip_action: bool = False) -> list[str]:
     if isinstance(value, dict):
         if set(value) == {"path"}:
             return [] if _valid_pointer(value.get("path")) else [f"{path}.path 不是合法 JSON Pointer"]
-        if set(value) == {"functionCall"}:
-            call = value.get("functionCall", {}).get("call") if isinstance(value.get("functionCall"), dict) else None
-            if call not in SAFE_FUNCTIONS or call not in functions:
-                return [f"{path} 使用了未被运行时 allowedFunctions 授权的函数 {call!r}"]
-            return _dynamic_tree(value["functionCall"].get("args", {}), f"{path}.functionCall.args", functions)
+        if "functionCall" in value:
+            return [f"{path} 动态函数值必须使用官方 call/args 形状，不使用 functionCall 包装"]
+        if "call" in value and set(value) <= {"call", "args"}:
+            return _call_spec_errors(value, path, functions, catalog)
         errors: list[str] = []
         for key, child in value.items():
-            # Event contexts are literal host payloads, not dynamic component values.
-            if key == "action" and isinstance(child, dict) and "event" in child:
+            if skip_action and key == "action":
                 continue
-            errors.extend(_dynamic_tree(child, f"{path}.{key}", functions))
+            errors.extend(_dynamic_tree(child, f"{path}.{key}", functions, catalog, skip_action=skip_action))
         return errors
     if isinstance(value, list):
-        return [error for index, item in enumerate(value) for error in _dynamic_tree(item, f"{path}[{index}]", functions)]
+        return [error for index, item in enumerate(value) for error in _dynamic_tree(item, f"{path}[{index}]", functions, catalog, skip_action=skip_action)]
     if isinstance(value, str):
         return _expression_errors(value, path)
     return []
@@ -242,9 +346,9 @@ def _schema_errors(value: Any, schema: Any, catalog: dict[str, Any], path: str, 
 
 
 def _dynamic_authorization_errors(node: dict[str, Any], functions: set[str], catalog: dict[str, Any], path: str) -> list[str]:
-    errors = _dynamic_tree(node, path, functions)
+    errors = _dynamic_tree(node, path, functions, catalog, skip_action=True)
     definitions = catalog.get("extendedFunctions", {})
-    allowed = functions & SAFE_FUNCTIONS & set(definitions if isinstance(definitions, dict) else {})
+    allowed = functions & (_known_functions(catalog) | CUSTOM_FUNCTIONS)
     for key in ("onClick", "onAppear", "onChange", "onSelect"):
         handlers = node.get(key, [])
         if not isinstance(handlers, list): continue
@@ -253,84 +357,86 @@ def _dynamic_authorization_errors(node: dict[str, Any], functions: set[str], cat
             if call not in allowed:
                 errors.append(f"{path}.{key}[{index}] 函数 {call!r} 未被运行时 allowedFunctions 授权")
             elif isinstance(handler, dict):
-                errors.extend(_dynamic_tree(handler.get("args", {}), f"{path}.{key}[{index}].args", functions))
+                handler_path = f"{path}.{key}[{index}]"
+                if call == "sendMsgToXiaoyi":
+                    errors.append(f"{handler_path} sendMsgToXiaoyi 只能由 Button.action.functionCall 触发")
+                definition = definitions.get(call, {}) if isinstance(definitions, dict) else {}
+                schema = definition.get("args") if isinstance(definition, dict) else None
+                if schema is not None:
+                    errors.extend(_schema_errors(handler.get("args", {}), schema, catalog, f"{handler_path}.args")[0])
+                errors.extend(_dynamic_tree(handler.get("args", {}), f"{handler_path}.args", functions, catalog))
     action = node.get("action")
     if isinstance(action, dict) and isinstance(action.get("functionCall"), dict):
         call = action["functionCall"].get("call")
         if call not in allowed:
-            errors.append(f"{path}.action.functionCall 函数 {call!r} 未被运行时 allowedFunctions 授权")
+            errors.append(f"{path}.action.functionCall 函数 {call!r} 未被运行时 a2ui.allowedFunctions 授权")
     return errors
 
 
-def _event_errors(node: dict[str, Any], allowed: list[dict[str, Any]], path: str, functions: set[str] | None = None) -> list[str]:
+def _action_errors(node: dict[str, Any], functions: set[str], catalog: dict[str, Any], path: str) -> list[str]:
     action = node.get("action")
     if not isinstance(action, dict):
         return []
-    if "functionCall" in action:
-        return [f"{path}.action.functionCall 不属于本项目允许的服务端交互合同"]
-    event = action.get("event")
-    if not isinstance(event, dict) or not _id(event.get("name")):
-        return [f"{path}.action.event 必须包含事件 name"]
-    definitions = {item.get("name"): item for item in allowed if isinstance(item, dict)}
-    if event["name"] not in definitions:
-        return [f"{path} 事件 {event['name']!r} 不在 allowedUiEvents 白名单中"]
-    context = event.get("context", {})
-    if _contains_dynamic(context):
-        return [f"{path}.action.event.context 必须是字面量 JSON"]
-    schema = definitions[event["name"]].get("contextSchema")
-    if isinstance(schema, dict):
-        return [f"{path}.action.event.context：{error}" for error in _literal_schema_errors(context, schema)]
-    return []
+    if "event" in action:
+        return [f"{path}.action.event 已废弃，交互必须使用 action.functionCall"]
+    if set(action) != {"functionCall"}:
+        return [f"{path}.action 必须只包含 functionCall"]
+    errors = _function_call_errors(action, f"{path}.action", functions, catalog, True)
+    function_call = action.get("functionCall", {})
+    if isinstance(function_call, dict) and function_call.get("call") == "sendMsgToXiaoyi" and node.get("component") != "Button":
+        errors.append(f"{path}.action.functionCall sendMsgToXiaoyi 只能绑定 Button")
+    return errors
 
 
-def _contains_dynamic(value: Any) -> bool:
-    if isinstance(value, str):
-        return EXPR_RE.fullmatch(value) is not None
-    if isinstance(value, dict):
-        if set(value) in ({"path"}, {"functionCall"}):
-            return True
-        return any(_contains_dynamic(child) for child in value.values())
-    if isinstance(value, list):
-        return any(_contains_dynamic(child) for child in value)
-    return False
+def _query_function_errors(action: dict[str, Any], nodes: dict[str, dict[str, Any]], path: str) -> list[str]:
+    function_call = action.get("functionCall", {})
+    if not isinstance(function_call, dict) or function_call.get("call") != "sendMsgToXiaoyi":
+        return []
+    params = function_call.get("args", {})
+    if not isinstance(params, dict):
+        return []
+    template = params.get("query")
+    if not isinstance(template, str):
+        return [f"{path}.functionCall.args.query 必须是字符串"]
+    names = re.findall(r"\$\{([A-Za-z][A-Za-z0-9_]*)\}", template)
+    residue = re.sub(r"\$\{[A-Za-z][A-Za-z0-9_]*\}", "", template)
+    errors = []
+    if "{" in residue or "}" in residue or "$" in residue:
+        errors.append(f"{path}.functionCall.args.query 只允许简单的 ${{name}} 占位符")
+    argument_names = set(params) - {"query"}
+    if set(names) != argument_names:
+        errors.append(f"{path}.functionCall.args.query 占位符必须与 query 参数键完全对应")
+    if not names and argument_names:
+        errors.append(f"{path}.functionCall.args 存在未被 query 引用的参数")
+    def check_source(value: Any, source_path: str) -> None:
+        if not isinstance(value, dict):
+            return
+        if set(value) == {"call", "args"}:
+            call = value.get("call")
+            args = value.get("args", {})
+            if not isinstance(args, dict):
+                return
+            if call in {"getRadioValue", "getCheckboxGroupValues"}:
+                group = args.get("group")
+                matching = [node for node in nodes.values() if node.get("component") in ({"Radio"} if call == "getRadioValue" else {"Checkbox"}) and node.get("group") == group]
+                if not isinstance(group, str) or not matching:
+                    errors.append(f"{source_path} 引用了不存在的 {call} group")
+                if call == "getCheckboxGroupValues" and not any(node.get("component") == "CheckboxGroup" and node.get("group") == group for node in nodes.values()):
+                    errors.append(f"{source_path} 未引用有效的 CheckboxGroup")
+            elif call in {"getSelectValue", "getToggleValue"}:
+                component_id = args.get("componentId")
+                expected = "Select" if call == "getSelectValue" else "Toggle"
+                if not isinstance(component_id, str) or nodes.get(component_id, {}).get("component") != expected:
+                    errors.append(f"{source_path} 引用了不存在的 {expected} 组件")
+            for key, child in args.items():
+                check_source(child, f"{source_path}.args.{key}")
+            return
+        for key, child in value.items():
+            check_source(child, f"{source_path}.{key}")
 
-
-def _literal_schema_errors(value: Any, schema: dict[str, Any], path: str = "context") -> list[str]:
-    """Small JSON Schema subset for host event context; expressions are not literals."""
-    if not isinstance(schema, dict):
-        return ["contextSchema 必须是对象"]
-    if isinstance(value, str) and EXPR_RE.fullmatch(value):
-        return [f"{path} 不得包含表达式"]
-    if isinstance(value, dict):
-        if set(value) == {"path"} or set(value) == {"functionCall"}:
-            return [f"{path} 不得包含动态绑定或函数调用"]
-        for key, item in value.items():
-            nested = _literal_schema_errors(item, {}, f"{path}.{key}")
-            if nested: return nested
-    if isinstance(value, list):
-        for index, item in enumerate(value):
-            nested = _literal_schema_errors(item, {}, f"{path}[{index}]")
-            if nested: return nested
-    typ = schema.get("type")
-    valid = {"object": isinstance(value, dict), "array": isinstance(value, list), "string": isinstance(value, str), "number": isinstance(value, (int, float)) and not isinstance(value, bool), "integer": isinstance(value, int) and not isinstance(value, bool), "boolean": isinstance(value, bool), "null": value is None}
-    if typ in valid and not valid[typ]:
-        return [f"{path} 预期类型为 {typ}"]
-    errors: list[str] = []
-    if "const" in schema and value != schema["const"]: errors.append(f"{path} 不匹配 const")
-    if "enum" in schema and value not in schema["enum"]: errors.append(f"{path} 不在 enum 中")
-    if isinstance(value, dict):
-        properties = schema.get("properties", {}) if isinstance(schema.get("properties"), dict) else {}
-        for key in schema.get("required", []) or []:
-            if key not in value: errors.append(f"{path} 缺少 {key}")
-        if schema.get("additionalProperties") is False:
-            errors.extend(f"{path} 不支持属性 {key!r}" for key in value if key not in properties)
-        for key, child in properties.items():
-            if key in value: errors.extend(_literal_schema_errors(value[key], child, f"{path}.{key}"))
-    if isinstance(value, list) and isinstance(schema.get("items"), dict):
-        for index, item in enumerate(value): errors.extend(_literal_schema_errors(item, schema["items"], f"{path}[{index}]"))
-    if isinstance(value, str):
-        if "minLength" in schema and len(value) < schema["minLength"]: errors.append(f"{path} 长度不足")
-        if "pattern" in schema and not re.search(schema["pattern"], value): errors.append(f"{path} 格式不匹配")
+    for name, value in params.items():
+        if name != "query":
+            check_source(value, f"{path}.functionCall.args.{name}")
     return errors
 
 
@@ -347,9 +453,9 @@ def _children(node: dict[str, Any]) -> list[str]:
     return result
 
 
-def validate_messages(messages: list[Any], catalog: dict[str, Any], allowed_ui_events: list[dict[str, Any]] | None = None, a2ui: dict[str, Any] | None = None) -> list[str]:
+def validate_messages(messages: list[Any], catalog: dict[str, Any], allowed_functions: list[str] | None = None, a2ui: dict[str, Any] | None = None) -> list[str]:
     errors: list[str] = []
-    allowed_ui_events = allowed_ui_events or []
+    allowed_functions = allowed_functions or []
     a2ui = a2ui or {}
     if not isinstance(catalog, dict) or catalog.get("catalogId") != CHAT_CATALOG_ID:
         return [f"catalog 必须是 A2UIRender Extended catalog {CHAT_CATALOG_ID!r}"]
@@ -365,8 +471,16 @@ def validate_messages(messages: list[Any], catalog: dict[str, Any], allowed_ui_e
     surface_id = create.get("surfaceId")
     if not _id(surface_id) or create.get("catalogId") != CHAT_CATALOG_ID:
         errors.append(f"createSurface 必须包含有效 surfaceId，catalogId 固定为 {CHAT_CATALOG_ID!r}")
-    capabilities = set(a2ui.get("capabilities", [])) if isinstance(a2ui.get("capabilities", []), list) else set()
-    functions = set(a2ui.get("allowedFunctions", [])) if isinstance(a2ui.get("allowedFunctions", []), list) else set()
+    declared_functions = a2ui.get("allowedFunctions", allowed_functions)
+    if not isinstance(declared_functions, list):
+        errors.append("a2ui.allowedFunctions 必须是字符串数组")
+        declared_functions = []
+    functions = {function for function in declared_functions if isinstance(function, str) and function.strip()}
+    if len(functions) != len(declared_functions):
+        errors.append("a2ui.allowedFunctions 必须只包含唯一的非空函数名")
+    unknown_functions = functions - (_known_functions(catalog) | CUSTOM_FUNCTIONS)
+    if unknown_functions:
+        errors.append(f"a2ui.allowedFunctions 包含未知函数：{', '.join(sorted(unknown_functions))}")
     nodes: dict[str, dict[str, Any]] = {}
     root_seen = False
     deleted = False
@@ -411,12 +525,7 @@ def validate_messages(messages: list[Any], catalog: dict[str, Any], allowed_ui_e
                 errors.append(f"{path}.condition 必须是 {{...}} 表达式")
             if name in CONTAINERS and "children" in node and not isinstance(node["children"], (list, dict)):
                 errors.append(f"{path}.children 必须是组件 ID 数组或模板对象")
-            errors.extend(_event_errors(node, allowed_ui_events, path, functions))
-            action_event = node.get("action", {}).get("event", {}) if isinstance(node.get("action"), dict) else {}
-            event_name = action_event.get("name") if isinstance(action_event, dict) else None
-            capability = {"submit_selection_query": "selection-query-v1", "submit_form_query": "form-reactivity-v1"}.get(event_name)
-            if capability and capability not in capabilities:
-                errors.append(f"{path} 事件 {event_name!r} 需要 a2ui.capabilities 中声明 {capability!r}")
+            errors.extend(_action_errors(node, functions, catalog, path))
             if name == "Web" and not isinstance(node.get("url"), str):
                 errors.append(f"{path}.url 必须是 URL 字符串")
             if name == "Image":
@@ -464,25 +573,29 @@ def validate_messages(messages: list[Any], catalog: dict[str, Any], allowed_ui_e
     visit("root")
     errors.extend(f"组件 {node_id!r} 无法从 root 到达" for node_id in set(nodes) - visited)
     if not any(nodes[node_id].get("component") == "Text" for node_id in visited): errors.append("最终回答必须包含 Text 组件")
+    for node_id, node in nodes.items():
+        action = node.get("action") if isinstance(node.get("action"), dict) else None
+        if isinstance(action, dict) and isinstance(action.get("functionCall"), dict):
+            errors.extend(_query_function_errors(action, nodes, f"组件 {node_id!r}"))
     return errors
 
 
-def validate_jsonl(path: Path, catalog: dict[str, Any], allowed_ui_events: list[dict[str, Any]] | None = None, a2ui: dict[str, Any] | None = None) -> list[str]:
+def validate_jsonl(path: Path, catalog: dict[str, Any], allowed_functions: list[str] | None = None, a2ui: dict[str, Any] | None = None) -> list[str]:
     messages: list[Any] = []
     errors: list[str] = []
     for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
         if not line.strip(): errors.append(f"第 {line_number} 行：JSONL 不允许空行"); continue
         try: messages.append(json.loads(line))
         except json.JSONDecodeError as exc: errors.append(f"第 {line_number} 行：JSON 无效：{exc.msg}")
-    return errors + validate_messages(messages, catalog, allowed_ui_events, a2ui)
+    return errors + validate_messages(messages, catalog, allowed_functions, a2ui)
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("jsonl", type=Path); parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG); parser.add_argument("--events", type=Path); parser.add_argument("--context", type=Path); args = parser.parse_args(argv)
+    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("jsonl", type=Path); parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG); parser.add_argument("--context", type=Path); args = parser.parse_args(argv)
     try:
         catalog = json.loads(args.catalog.read_text(encoding="utf-8")); context = json.loads(args.context.read_text(encoding="utf-8")) if args.context else {}
         if not isinstance(context, dict): raise ValueError("--context 文件必须是对象")
-        events = json.loads(args.events.read_text(encoding="utf-8")) if args.events else context.get("allowedUiEvents", []); errors = validate_jsonl(args.jsonl, catalog, events, context.get("a2ui", {}))
+        functions = context.get("a2ui", {}).get("allowedFunctions", []) if isinstance(context.get("a2ui", {}), dict) else []; errors = validate_jsonl(args.jsonl, catalog, functions, context.get("a2ui", {}))
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"错误：{exc}", file=sys.stderr); return 2
     for error in errors: print(f"错误：{error}")

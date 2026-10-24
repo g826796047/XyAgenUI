@@ -1,2 +1,0 @@
-{"version":"v0.9","createSurface":{"surfaceId":"test-event","catalogId":"ohos.a2ui.extended.catalog"}}
-{"version":"v0.9","updateComponents":{"surfaceId":"test-event","components":[{"id":"root","component":"Column","children":["title","open","answer"]},{"id":"title","component":"Text","content":"可以继续查看条目。","styles":{"fontSize":20,"fontWeight":"bold"}},{"id":"open","component":"Button","label":"打开条目","enabled":true,"action":{"event":{"name":"open_item","context":{"itemId":"item-42"}}}},{"id":"answer","component":"Text","content":"可以继续查看条目。"}]}}

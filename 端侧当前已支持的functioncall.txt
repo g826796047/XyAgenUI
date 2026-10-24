@@ -1,0 +1,74 @@
+private addJumpFunction(): void {
+    this.myCatalog.addClientFunction({
+      name: 'openSuperlink', schemaProvider: () => '', functionCall: (params) => {
+        LogUtil.info(TAG, `addFunction openSuperlink params : ${SafeJson.ohAegJsonStringify(params)}`);
+        LinkProcessUtil.processSuperLink('', (params as Record<string, string>)?.url,
+          this.getUIContextFn!().getHostContext() as common.UIAbilityContext);
+        return undefined;
+      }
+    });
+    this.myCatalog.addClientFunction({
+      name: 'openApplink', schemaProvider: () => '', functionCall: (params) => {
+        LogUtil.info(TAG, `addFunction openApplink params : ${SafeJson.ohAegJsonStringify(params)}`);
+        const context = this.getUIContextFn!().getHostContext() as common.UIAbilityContext;
+        LinkProcessUtil.jumpToAppLink(context, (params as Record<string, string>)?.url);
+        return undefined;
+      }
+    });
+    this.myCatalog.addClientFunction({
+      name: 'openDeeplink', schemaProvider: () => '', functionCall: (params) => {
+        LogUtil.info(TAG, `addFunction openDeeplink params : ${SafeJson.ohAegJsonStringify(params)}`);
+        let deepLinkWant: Want = {
+          bundleName: (params as Record<string, string>)?.bundleName,
+          uri: (params as Record<string, string>)?.url
+        }
+        const context = this.getUIContextFn!().getHostContext() as common.UIAbilityContext;
+        context.startAbility(deepLinkWant).then(() => {
+          LogUtil.info(TAG, `start deeplink success`);
+        })
+          .catch((err: BusinessError) => {
+            LogUtil.error(TAG, `start deeplink fail. err code=${err?.code}`);
+          })
+        return undefined;
+      }
+    });
+    this.myCatalog.addClientFunction({
+      name: 'sendMsgToXiaoyi', schemaProvider: () => '', functionCall: (params, context) => {
+        let query: string = (params as Record<string, string | string[]>)?.query as string;
+        if (query?.includes('${')) {
+          const result: string = query.replace(/\${([^}]+)}/g, (match: string, key: string): string => {
+            const exp: A2UIValueType = (params as Record<string, A2UIValueType>)[key.trim()];
+            const value: A2UIValueType = context.resolver.evaluateValue<A2UIValueType>(exp);
+            if (value === undefined || value === null) {
+              return '';
+            }
+            if (typeof value === 'string') {
+              return value;
+            }
+            if (Array.isArray(value)) {
+              const strArray: A2UIValueType[] = value;
+              const len: number = strArray.length;
+              if (len === 0) {
+                return '';
+              }
+              if (len === 1) {
+                return strArray[0]?.toString();
+              }
+              if (len === 2) {
+                return `${strArray[0]}和${strArray[1]}`;
+              }
+              if (len >= 3) {
+                const front: string = strArray.slice(0, -1).join('、');
+                const last: string = strArray[len - 1]?.toString();
+                return `${front}和${last}`;
+              }
+            }
+            return '';
+          });
+          query = result;
+        }
+        this.onSendMessageFn(query);
+        return undefined;
+      }
+    });
+  }

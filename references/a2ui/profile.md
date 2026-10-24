@@ -8,4 +8,6 @@
 
 官方 catalog 支持字面量、`{"path":"/path"}` 数据绑定和 `{{ ... }}` 表达式。表达式只使用官方语法、数据模型变量、算术/比较/逻辑运算及宿主明确授权的扩展函数；最大长度和嵌套限制遵循快照。不得执行任意 JavaScript、`eval` 或未声明函数。数据路径是字面 JSON Pointer，不能把表达式放入 `path` 对象。
 
-先完整保留事实，再按信息关系选择 `Column` 分组、`Row`/`Grid` 比较、`List` 清单、`Tabs` 多视图、`Divider` 分隔、`Progress` 状态、`Image` 真实资源和 `If` 条件分支。没有实际决策点时不强行生成输入；缺少宿主能力或事件时静态展示。
+先完整保留事实，再按信息关系选择 `Column` 分组、`Row`/`Grid` 比较、`List` 清单、`Tabs` 多视图、`Divider` 分隔、`Progress` 状态、`Image` 真实资源和 `If` 条件分支。没有实际决策点时不强行生成输入；缺少所需运行时函数时静态展示。
+
+选择或表单确认需要灵活组装下一轮 query 时，遵循 [模板化 Query 合同](query-template.md)：只有宿主通过 `a2ui.allowedFunctions` 声明 `sendMsgToXiaoyi` 时才使用模板。模板及参数映射必须符合函数合同；renderer 在提交时依据实际组件状态替换命名占位符。
