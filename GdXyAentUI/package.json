@@ -1,0 +1,14 @@
+{
+  "name": "gd-xy-agent-ui",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "高德 AGenUI 中文回复 Skill、组件合同和浏览器参考工作台",
+  "engines": {"node": ">=20"},
+  "scripts": {
+    "start": "node tools/serve_renderer.mjs",
+    "test": "node --test renderer/tests/*.test.mjs tests/*.test.mjs",
+    "build:catalog": "node tools/build_catalog.mjs",
+    "validate": "node tools/validate_agenui.mjs"
+  }
+}

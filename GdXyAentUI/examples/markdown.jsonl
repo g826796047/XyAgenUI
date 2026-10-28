@@ -1,0 +1,3 @@
+{"version":"v0.9","createSurface":{"surfaceId":"gd-markdown","catalogId":"urn:a2ui:catalog:agenui_catalog"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"gd-markdown","components":[{"id":"root","component":"Column","children":["content"]},{"id":"content","component":"Markdown","content":{"path":"/answer/markdown"}}]}}
+{"version":"v0.9","updateDataModel":{"surfaceId":"gd-markdown","path":"/answer","value":{"markdown":"## 迁移结果\n\n- 使用 **AGenUI** 组件\n- 保留流式渲染\n- 由宿主控制函数"}}}

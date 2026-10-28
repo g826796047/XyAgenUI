@@ -1,0 +1,56 @@
+[
+  {
+    "id": "short-answer",
+    "title": "短回答",
+    "query": "A2UI 是什么？"
+  },
+  {
+    "id": "structured-summary",
+    "title": "结构化摘要",
+    "query": "总结迁移方案"
+  },
+  {
+    "id": "comparison",
+    "title": "比较",
+    "query": "比较两种实现"
+  },
+  {
+    "id": "image-answer",
+    "title": "图片内容",
+    "query": "展示图片并说明",
+    "runtimeContext": "runtime-context.json"
+  },
+  {
+    "id": "selection-multiple",
+    "title": "多选并组装 query",
+    "query": "选择想吃的食物"
+  },
+  {
+    "id": "selection-single",
+    "title": "单选并组装 query",
+    "query": "选择优先级"
+  },
+  {
+    "id": "form-ingredients",
+    "title": "表单和联动计算",
+    "query": "根据人数计算食材量"
+  },
+  {
+    "id": "markdown",
+    "title": "Markdown（需注册）",
+    "query": "流式展示 Markdown",
+    "runtimeContext": "runtime-context.json"
+  },
+  {
+    "id": "function-call-link",
+    "title": "链接 FunctionCall",
+    "query": "打开 AGenUI 文档",
+    "runtimeContext": "runtime-context.json"
+  },
+  {
+    "id": "component-gallery",
+    "title": "25 种组件合同画廊",
+    "query": "查看组件能力和预览边界",
+    "runtimeContext": "runtime-context.json"
+  }
+]

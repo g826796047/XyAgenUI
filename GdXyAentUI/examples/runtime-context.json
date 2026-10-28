@@ -1,0 +1,44 @@
+{
+  "a2ui": {
+    "catalogId": "urn:a2ui:catalog:agenui_catalog",
+    "allowedComponents": [
+      "Text",
+      "Image",
+      "Icon",
+      "Video",
+      "AudioPlayer",
+      "Row",
+      "Column",
+      "List",
+      "Card",
+      "Tabs",
+      "Modal",
+      "Divider",
+      "Button",
+      "TextField",
+      "CheckBox",
+      "ChoicePicker",
+      "Slider",
+      "DateTimeInput",
+      "RichText",
+      "Lottie",
+      "Table",
+      "Web",
+      "Markdown",
+      "Carousel",
+      "Chart"
+    ],
+    "allowedFunctions": [
+      "sendMsgToXiaoyi",
+      "openSuperlink",
+      "openApplink",
+      "openDeeplink",
+      "openUrl",
+      "formatNumber",
+      "formatString",
+      "required",
+      "numeric",
+      "calculateNumber"
+    ]
+  }
+}

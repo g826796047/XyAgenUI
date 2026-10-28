@@ -1,0 +1,2 @@
+{"version":"v0.9","createSurface":{"surfaceId":"gd-image","catalogId":"urn:a2ui:catalog:agenui_catalog"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"gd-image","components":[{"id":"root","component":"Column","children":["image","caption"]},{"id":"image","component":"Image","url":"/examples/assets/landmark.svg","description":"示例地标图片","fit":"contain","variant":"mediumFeature"},{"id":"caption","component":"Text","text":"图片资源来自项目样例，仅用于验证 Image 的绑定和安全加载。","variant":"caption"}]}}

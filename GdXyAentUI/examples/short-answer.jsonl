@@ -1,0 +1,2 @@
+{"version":"v0.9","createSurface":{"surfaceId":"gd-short-answer","catalogId":"urn:a2ui:catalog:agenui_catalog"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"gd-short-answer","components":[{"id":"root","component":"Column","children":["answer"]},{"id":"answer","component":"Text","text":"A2UI 是把界面描述作为结构化消息流发送，并由端侧原生渲染。","variant":"body"}]}}
